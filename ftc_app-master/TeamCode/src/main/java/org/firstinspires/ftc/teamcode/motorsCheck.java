@@ -16,8 +16,8 @@ public class motorsCheck extends LinearOpMode {
     public void runOpMode() {
 
         motor_left = hardwareMap.get(DcMotor.class, "left_drive");
-        motor_right = hardwareMap.get(DcMotor.class, "center_drive");
-        motor_center = hardwareMap.get(DcMotor.class, "right_drive");
+        motor_right = hardwareMap.get(DcMotor.class, "right_drive");
+        motor_center = hardwareMap.get(DcMotor.class, "center_drive");
         DcMotor[] motors = {motor_left, motor_right, motor_center};
 
         // Wait for the start button

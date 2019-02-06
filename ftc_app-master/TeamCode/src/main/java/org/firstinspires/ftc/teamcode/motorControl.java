@@ -10,7 +10,7 @@ public class motorControl extends LinearOpMode {
 
     // Define class members
     DcMotor motor;
-    double  power   = 0;
+    double  power = 0;
 
     @Override
     public void runOpMode() {
