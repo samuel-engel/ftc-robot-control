@@ -37,6 +37,7 @@ public class motorsCheck extends LinearOpMode {
             motors[i].setPower(power);
 
             if(power >= 1.0) {
+                sleep(2000);
                 motors[i].setPower(0);
                 i++;
             }

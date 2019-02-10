@@ -45,7 +45,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-@TeleOp(name = "Despacito: Ramp Motor Speed", group = "Motors")
+@TeleOp(name = "Ramp left motor", group = "Motors")
 //@Disabled
 public class RampMotorSpeed extends LinearOpMode {
 
