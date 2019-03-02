@@ -30,6 +30,7 @@ public class single_joystick_drive extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
+            power_left = power_right = power_center = 0;
             right_x = 0.0 - this.gamepad1.right_stick_x;
             right_y = 0.0 - this.gamepad1.right_stick_y;
 
@@ -42,11 +43,15 @@ public class single_joystick_drive extends LinearOpMode {
             R_plus_L = (1.0 - Math.abs(right_x))*right_y + right_y;
             R_minus_L =(1.0 - Math.abs(right_y))*right_x + right_x;
             power_right = (R_plus_L+R_minus_L)/2;
+
             power_left = (R_plus_L-R_minus_L)/2;
+            telemetry.addData("right", power_right*power_right*power_right );
+            telemetry.addData("left", power_left*power_left*power_left);
+            telemetry.update();
 
             // Set power with quadratic easing in
-            motor_right.setPower(power_right*power_right);
-            motor_left.setPower(power_left*power_left);
+            motor_right.setPower(power_right);
+            motor_left.setPower(power_left);
 
             motor_center.setPower(power_center);
         }

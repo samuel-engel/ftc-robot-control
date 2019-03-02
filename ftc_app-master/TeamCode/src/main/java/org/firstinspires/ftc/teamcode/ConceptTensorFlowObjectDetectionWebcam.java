@@ -31,7 +31,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -51,16 +50,15 @@ import java.util.List;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@TeleOp(name = "webcam detection", group = "Concept")
+@TeleOp(name = "Concept: TensorFlow Object Detection Webcam", group = "Concept")
 //@Disabled
-public class tf_detection_webcam extends LinearOpMode {
+public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
     private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
 
     private static final String VUFORIA_KEY = "AZVtCBn/////AAABmc0ZBKXorUd9jx9puP8gcV96rgljk0hDKL2staD0PinAX8J8c8P/UubaAwj+waF8pY3SKAGGxDh7ZfSCgr30RKxBJ/UfJkUmCbY3q8OhOGkwaSWrNk4A/BR5Sfzbw/VFRofB9n0e9jYBCJe4Rxm2kcOKa0VhER/r7VEgI2ZUhGN58BQN6ZY8j7+QUHlLTFsMm9IOAyqOc1C4QPHc5/T0tCG/mKbXOsY6l7mI6XqjUB/UmBl7I+1VhPR3hsoHJelnGqkp+uW5BqMdWwIaz7wd5D0v6Y3ZW33MjN348C32rAlwP4D4LPbI1OqSBFtS544AjbK97zojViEy1i534ykZs5MjvJYXVGiHgDxUSeMYGzOt";
-    DcMotor motor_center;
-    double  power_center;
+
     /**
      * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
      * localization engine.
@@ -77,8 +75,6 @@ public class tf_detection_webcam extends LinearOpMode {
     public void runOpMode() {
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
-        motor_center = hardwareMap.get(DcMotor.class, "center_drive");
-
         initVuforia();
 
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
@@ -105,32 +101,28 @@ public class tf_detection_webcam extends LinearOpMode {
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                     if (updatedRecognitions != null) {
                       telemetry.addData("# Object Detected", updatedRecognitions.size());
-                      if (updatedRecognitions.size() == 1) {
-                         int left_coordinate = 0;
-                         int screen_width = 0;
+                      if (updatedRecognitions.size() == 3) {
+                        int goldMineralX = -1;
+                        int silverMineral1X = -1;
+                        int silverMineral2X = -1;
                         for (Recognition recognition : updatedRecognitions) {
-                            left_coordinate = (int) recognition.getLeft();
-                            screen_width = recognition.getImageWidth();
-                            telemetry.addData("# Left", left_coordinate);
-                            telemetry.addData("# width", screen_width);
-                            if (left_coordinate < (screen_width/2)) {
-                                power_center = 0.5;
-                                telemetry.addData("#", "drive right");
-
-                            }
-                            else if (left_coordinate > (screen_width/2)) {
-                                power_center = -0.5;
-                                telemetry.addData("#", "drive left");
-
-                            }
-                            motor_center.setPower(power_center);
-
+                          if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
+                            goldMineralX = (int) recognition.getLeft();
+                          } else if (silverMineral1X == -1) {
+                            silverMineral1X = (int) recognition.getLeft();
+                          } else {
+                            silverMineral2X = (int) recognition.getLeft();
+                          }
                         }
-
-                      }
-                      else {
-                          motor_center.setPower(0);
-
+                        if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
+                          if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
+                            telemetry.addData("Gold Mineral Position", "Left");
+                          } else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
+                            telemetry.addData("Gold Mineral Position", "Right");
+                          } else {
+                            telemetry.addData("Gold Mineral Position", "Center");
+                          }
+                        }
                       }
                       telemetry.update();
                     }

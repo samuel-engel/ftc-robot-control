@@ -99,8 +99,8 @@ public class iterative_mode extends OpMode
         power_left = (R_plus_L-R_minus_L)/2;
 
         // Set power with quadratic easing in
-        motor_right.setPower(power_right*power_right);
-        motor_left.setPower(power_left*power_left);
+        motor_right.setPower(power_right*power_right*power_right);
+        motor_left.setPower(power_left*power_left*power_left);
 
         motor_center.setPower(power_center);
         telemetry.addData("Status", "Run Time: " + runtime.toString());
