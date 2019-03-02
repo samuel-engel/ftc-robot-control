@@ -29,7 +29,6 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -49,7 +48,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 @TeleOp(name = "Concept: Scan Servo", group = "Concept")
-@Disabled
+//@Disabled
 public class servo_sample_test extends LinearOpMode {
 
     static final double INCREMENT   = 0.01;     // amount to slew servo each CYCLE_MS cycle
