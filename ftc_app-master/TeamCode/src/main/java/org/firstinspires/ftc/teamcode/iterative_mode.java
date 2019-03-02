@@ -36,7 +36,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 
-@TeleOp(name="Basic: Iterative OpMode", group="Iterative Opmode")
+@TeleOp(name="movement iterative", group="Iterative Opmode")
 //@Disabled
 public class iterative_mode extends OpMode
 {

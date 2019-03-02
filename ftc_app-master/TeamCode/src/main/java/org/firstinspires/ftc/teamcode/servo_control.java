@@ -34,7 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
 
-@TeleOp(name = "Concept: Scan Servo", group = "Concept")
+@TeleOp(name = "Servo control", group = "Concept")
 //@Disabled
 public class servo_control extends LinearOpMode {
 
