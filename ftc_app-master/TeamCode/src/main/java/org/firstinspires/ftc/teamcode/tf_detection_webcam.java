@@ -41,16 +41,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 import java.util.List;
 
-/**
- * This 2018-2019 OpMode illustrates the basics of using the TensorFlow Object Detection API to
- * determine the position of the gold and silver minerals.
- *
- * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list.
- *
- * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
- * is explained below.
- */
+
 @TeleOp(name = "webcam detection", group = "Concept")
 //@Disabled
 public class tf_detection_webcam extends LinearOpMode {
@@ -61,6 +52,7 @@ public class tf_detection_webcam extends LinearOpMode {
     private static final String VUFORIA_KEY = "AZVtCBn/////AAABmc0ZBKXorUd9jx9puP8gcV96rgljk0hDKL2staD0PinAX8J8c8P/UubaAwj+waF8pY3SKAGGxDh7ZfSCgr30RKxBJ/UfJkUmCbY3q8OhOGkwaSWrNk4A/BR5Sfzbw/VFRofB9n0e9jYBCJe4Rxm2kcOKa0VhER/r7VEgI2ZUhGN58BQN6ZY8j7+QUHlLTFsMm9IOAyqOc1C4QPHc5/T0tCG/mKbXOsY6l7mI6XqjUB/UmBl7I+1VhPR3hsoHJelnGqkp+uW5BqMdWwIaz7wd5D0v6Y3ZW33MjN348C32rAlwP4D4LPbI1OqSBFtS544AjbK97zojViEy1i534ykZs5MjvJYXVGiHgDxUSeMYGzOt";
     DcMotor motor_center;
     double  power_center;
+    int left_coordinate, screen_width, width, left_boundary;
     /**
      * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
      * localization engine.
@@ -106,21 +98,32 @@ public class tf_detection_webcam extends LinearOpMode {
                     if (updatedRecognitions != null) {
                       telemetry.addData("# Object Detected", updatedRecognitions.size());
                       if (updatedRecognitions.size() == 1) {
-                         int left_coordinate = 0;
-                         int screen_width = 0;
+
                         for (Recognition recognition : updatedRecognitions) {
                             left_coordinate = (int) recognition.getLeft();
                             screen_width = recognition.getImageWidth();
+                            width = (int) recognition.getWidth();
+                            left_boundary = (screen_width - width)/2;
+
                             telemetry.addData("# Left", left_coordinate);
-                            telemetry.addData("# width", screen_width);
-                            if (left_coordinate < (screen_width/2)) {
-                                power_center = 0.5;
+                            telemetry.addData("# screen width", screen_width);
+                            telemetry.addData("# width", width);
+                            telemetry.addData("# boundary", left_boundary);
+
+
+
+                            if (left_coordinate > left_boundary) {
+                                power_center = (left_boundary - left_coordinate)/screen_width;
+
                                 telemetry.addData("#", "drive right");
+                                telemetry.addData("#", power_center);
+
 
                             }
-                            else if (left_coordinate > (screen_width/2)) {
-                                power_center = -0.5;
+                            else if (left_coordinate < left_boundary) {
+                                power_center = (left_boundary - left_coordinate)/screen_width;
                                 telemetry.addData("#", "drive left");
+                                telemetry.addData("#", power_center);
 
                             }
                             motor_center.setPower(power_center);
