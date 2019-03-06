@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -50,8 +51,10 @@ public class tf_detection_webcam extends LinearOpMode {
     private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
 
     private static final String VUFORIA_KEY = "AZVtCBn/////AAABmc0ZBKXorUd9jx9puP8gcV96rgljk0hDKL2staD0PinAX8J8c8P/UubaAwj+waF8pY3SKAGGxDh7ZfSCgr30RKxBJ/UfJkUmCbY3q8OhOGkwaSWrNk4A/BR5Sfzbw/VFRofB9n0e9jYBCJe4Rxm2kcOKa0VhER/r7VEgI2ZUhGN58BQN6ZY8j7+QUHlLTFsMm9IOAyqOc1C4QPHc5/T0tCG/mKbXOsY6l7mI6XqjUB/UmBl7I+1VhPR3hsoHJelnGqkp+uW5BqMdWwIaz7wd5D0v6Y3ZW33MjN348C32rAlwP4D4LPbI1OqSBFtS544AjbK97zojViEy1i534ykZs5MjvJYXVGiHgDxUSeMYGzOt";
+    private ElapsedTime runtime = new ElapsedTime();
+
     double  power_center;
-    DcMotor motor_center;
+    DcMotor motor_left, motor_right, motor_center;
 
     int left_coordinate, screen_width, width, left_boundary, distance_to_boundary;
     String gold_mineral_position = null;
@@ -185,9 +188,20 @@ public class tf_detection_webcam extends LinearOpMode {
                         telemetry.update();
                     }
                 }
+                //future improvement dont shutdown the tensorflow library but use the size of the bound box to determine the proximity to the mineral
                 if(is_gold_ahead) {
                     //go forward
                     //TODO: time based driving
+                    motor_right.setPower(0.5);
+                    motor_left.setPower(0.5);
+                    runtime.reset();
+                    while (opModeIsActive() && (runtime.seconds() < 1.0)) {
+                        telemetry.addData("Path", "Elapsed", runtime.seconds());
+                        telemetry.update();
+                    }
+                    motor_right.setPower(0);
+                    motor_left.setPower(0);
+
                 }
 
 
