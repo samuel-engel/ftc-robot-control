@@ -50,9 +50,12 @@ public class tf_detection_webcam extends LinearOpMode {
     private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
 
     private static final String VUFORIA_KEY = "AZVtCBn/////AAABmc0ZBKXorUd9jx9puP8gcV96rgljk0hDKL2staD0PinAX8J8c8P/UubaAwj+waF8pY3SKAGGxDh7ZfSCgr30RKxBJ/UfJkUmCbY3q8OhOGkwaSWrNk4A/BR5Sfzbw/VFRofB9n0e9jYBCJe4Rxm2kcOKa0VhER/r7VEgI2ZUhGN58BQN6ZY8j7+QUHlLTFsMm9IOAyqOc1C4QPHc5/T0tCG/mKbXOsY6l7mI6XqjUB/UmBl7I+1VhPR3hsoHJelnGqkp+uW5BqMdWwIaz7wd5D0v6Y3ZW33MjN348C32rAlwP4D4LPbI1OqSBFtS544AjbK97zojViEy1i534ykZs5MjvJYXVGiHgDxUSeMYGzOt";
-    DcMotor motor_center;
     double  power_center;
-    int left_coordinate, screen_width, width, left_boundary;
+    DcMotor motor_center;
+
+    int left_coordinate, screen_width, width, left_boundary, distance_to_boundary;
+    String gold_mineral_position = null;
+    Boolean is_gold_ahead;
     /**
      * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
      * localization engine.
@@ -95,49 +98,101 @@ public class tf_detection_webcam extends LinearOpMode {
                     // getUpdatedRecognitions() will return null if no new information is available since
                     // the last time that call was made.
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+
+                    //if detecting something
                     if (updatedRecognitions != null) {
-                      telemetry.addData("# Object Detected", updatedRecognitions.size());
-                      if (updatedRecognitions.size() == 1) {
-
-                        for (Recognition recognition : updatedRecognitions) {
-                            left_coordinate = (int) recognition.getLeft();
-                            screen_width = recognition.getImageWidth();
-                            width = (int) recognition.getWidth();
-                            left_boundary = (screen_width - width)/2;
-
-                            telemetry.addData("# Left", left_coordinate);
-                            telemetry.addData("# screen width", screen_width);
-                            telemetry.addData("# width", width);
-                            telemetry.addData("# boundary", left_boundary);
+                        telemetry.addData("# Object Detected", updatedRecognitions.size());
 
 
-
-                            if (left_coordinate > left_boundary) {
-                                power_center = (left_boundary - left_coordinate)/screen_width;
-
-                                telemetry.addData("#", "drive right");
-                                telemetry.addData("#", power_center);
-
-
+                        // if three objects detected, find the position of the golden mineral
+                        if (updatedRecognitions.size() == 3 && gold_mineral_position == null) {
+                            int goldMineralX = -1;
+                            int silverMineral1X = -1;
+                            int silverMineral2X = -1;
+                            for (Recognition recognition : updatedRecognitions) {
+                                if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
+                                    goldMineralX = (int) recognition.getLeft();
+                                } else if (silverMineral1X == -1) {
+                                    silverMineral1X = (int) recognition.getLeft();
+                                } else {
+                                    silverMineral2X = (int) recognition.getLeft();
+                                }
                             }
-                            else if (left_coordinate < left_boundary) {
-                                power_center = (left_boundary - left_coordinate)/screen_width;
-                                telemetry.addData("#", "drive left");
-                                telemetry.addData("#", power_center);
-
+                            if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
+                                if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
+                                    gold_mineral_position = "left";
+                                } else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
+                                    gold_mineral_position = "right";
+                                } else {
+                                    gold_mineral_position = "center";
+                                }
                             }
-                            motor_center.setPower(power_center);
-
                         }
 
-                      }
-                      else {
-                          motor_center.setPower(0);
+                        //for every recognized object
+                        for (Recognition recognition : updatedRecognitions) {
+                            //if one of the recognized objects is the gold mineral
+                            if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
+                                left_coordinate = (int) recognition.getLeft();
+                                screen_width = recognition.getImageWidth();
+                                width = (int) recognition.getWidth();
+                                // define left boundary at half the screen size - half the width of the object
+                                // if left coordinate equals boundary, object is horizontally centered
+                                left_boundary = (screen_width - width) / 2;
 
-                      }
-                      telemetry.update();
+                                telemetry.addData("# Left", left_coordinate);
+                                telemetry.addData("# Screen width", screen_width);
+                                telemetry.addData("# Width", width);
+                                telemetry.addData("# Boundary", left_boundary);
+
+                                //difference between the left coordinate and boundary in pixels
+                                distance_to_boundary = (left_boundary - left_coordinate);
+
+
+                                // if on right half of screen
+                                if (left_coordinate < left_boundary) {
+                                    //the decimal percentage of distance-to-boundary of the edge-to-boundary size in pixels
+                                    //left_boundary already expressed as the pixels from left edge
+                                    power_center = (double) distance_to_boundary / left_boundary;
+                                    telemetry.addData("#", "Drive left");
+                                    telemetry.addData("#", power_center);
+                                }
+                                //if on left half of screen
+                                else if (left_coordinate > left_boundary) {
+                                    //the decimal percentage of distance-to-boundary of the edge-to-boundary size in pixels
+                                    //left_boundary + width is equivalent to (screen_width + width) / 2;
+                                    power_center = (double) distance_to_boundary / (left_boundary + width);
+                                    telemetry.addData("#", "Drive right");
+
+                                }
+                                //in middle
+                                //TODO: increase boundary to leave +- width to count as 'in center'
+                                else {
+                                    motor_center.setPower(0);
+                                    is_gold_ahead = true;
+                                    tfod.shutdown();
+                                }
+                                motor_center.setPower(power_center);
+                                telemetry.addData("#", power_center);
+
+                            }
+                            else {
+                                //look around if nothing happens?
+                                motor_center.setPower(0);
+
+                            }
+                        }
+                        telemetry.update();
                     }
                 }
+                if(is_gold_ahead) {
+                    //go forward
+                    //TODO: time based driving
+                }
+
+
+
+
             }
         }
 

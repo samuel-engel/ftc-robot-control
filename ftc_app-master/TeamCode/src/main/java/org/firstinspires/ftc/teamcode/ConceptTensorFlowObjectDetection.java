@@ -64,6 +64,7 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
 
     int left_coordinate, screen_width, width, left_boundary, distance_to_boundary;
     String gold_mineral_position = null;
+    Boolean is_gold_ahead;
 
 
     /**
@@ -179,7 +180,8 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
                                 //TODO: increase boundary to leave +- width to count as 'in center'
                                 else {
                                     motor_center.setPower(0);
-                                    //go to another phase
+                                    is_gold_ahead = true;
+                                    tfod.shutdown();
                                 }
                                 motor_center.setPower(power_center);
                                 telemetry.addData("#", power_center);
@@ -194,6 +196,14 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
                         telemetry.update();
                     }
                 }
+                if(is_gold_ahead) {
+                    //go forward
+                    //TODO: time based driving
+                }
+
+
+
+
             }
         }
 
