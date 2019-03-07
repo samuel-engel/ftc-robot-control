@@ -42,13 +42,23 @@ public class timed_forward extends LinearOpMode {
                 telemetry.addData("Path", "forward %2.5f S Elapsed", runtime.seconds());
                 telemetry.update();
             }
-//            runtime.reset();
+
 //            motor_left.setPower(-0.5);
 //            motor_right.setPower(-0.5);
+//            runtime.reset();
 //            while (opModeIsActive() && (runtime.seconds() < 1.0) && !interupt) {
 //                telemetry.addData("Path", "backward %2.5f S Elapsed", runtime.seconds());
 //                telemetry.update();
 //            }
+
+//            motor_left.setPower(0.5);
+//            motor_right.setPower(-0.5);
+//            runtime.reset();
+//            while (opModeIsActive() && (runtime.seconds() < 1.0) && !interupt) {
+//                telemetry.addData("Path", "sideways %2.5f S Elapsed", runtime.seconds());
+//                telemetry.update();
+//            }
+
             motor_right.setPower(0);
             motor_left.setPower(0);
             telemetry.update();
