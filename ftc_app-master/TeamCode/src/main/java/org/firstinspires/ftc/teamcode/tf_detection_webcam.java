@@ -76,6 +76,11 @@ public class tf_detection_webcam extends LinearOpMode {
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
         motor_center = hardwareMap.get(DcMotor.class, "center_drive");
+        motor_left = hardwareMap.get(DcMotor.class, "left_drive");
+        motor_right = hardwareMap.get(DcMotor.class, "right_drive");
+        // Establishing the initial direction of the motors
+        motor_right.setDirection(DcMotor.Direction.REVERSE);
+        motor_left.setDirection(DcMotor.Direction.FORWARD);
 
         initVuforia();
 
