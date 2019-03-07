@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name = "Tank Drive", group = "Control")
+@TeleOp(name = "Timed forward", group = "Control")
 public class timed_forward extends LinearOpMode {
     // Define class members
     DcMotor motor_left, motor_right;
@@ -32,25 +32,29 @@ public class timed_forward extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            interupt = this.gamepad1.a;
-
-
-            motor_left.setPower(0.5);
-            motor_right.setPower(0.5);
+            motor_left.setPower(0.3);
+            motor_right.setPower(0.3);
+            telemetry.addData(">", runtime.seconds());
             runtime.reset();
-            while (opModeIsActive() && (runtime.seconds() < 1.0) && !interupt) {
-                telemetry.addData("Path", "forward %2.5f S Elapsed", runtime.seconds());
+            while (opModeIsActive() && (runtime.seconds() < 2.0) && !interupt) {
+                interupt = this.gamepad1.a;
+                telemetry.addData(">", "forward %2.5f S Elapsed", runtime.seconds());
+                telemetry.addData(">", interupt);
+                telemetry.addData(">", runtime);
                 telemetry.update();
             }
 
-//            motor_left.setPower(-0.5);
-//            motor_right.setPower(-0.5);
-//            runtime.reset();
-//            while (opModeIsActive() && (runtime.seconds() < 1.0) && !interupt) {
-//                telemetry.addData("Path", "backward %2.5f S Elapsed", runtime.seconds());
-//                telemetry.update();
-//            }
+//            Backwards
+            motor_left.setPower(-0.3);
+            motor_right.setPower(-0.3);
+            runtime.reset();
+            while (opModeIsActive() && (runtime.seconds() < 2.0) && !interupt) {
+                interupt = this.gamepad1.a;
+                telemetry.addData("Path", "backward %2.5f S Elapsed", runtime.seconds());
+                telemetry.update();
+            }
 
+            // turn
 //            motor_left.setPower(0.5);
 //            motor_right.setPower(-0.5);
 //            runtime.reset();
@@ -62,6 +66,7 @@ public class timed_forward extends LinearOpMode {
             motor_right.setPower(0);
             motor_left.setPower(0);
             telemetry.update();
+            sleep(5000);
         }
 
         telemetry.addData(">", "Done ._.");

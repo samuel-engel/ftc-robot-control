@@ -140,7 +140,8 @@ public class tf_detection_webcam extends LinearOpMode {
                         //for every recognized object
                         for (Recognition recognition : updatedRecognitions) {
                             //if one of the recognized objects is the gold mineral
-                            if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
+                            //LABEL_GOLD_MINERAL
+                            if (recognition.getLabel().equals(LABEL_SILVER_MINERAL)) {
                                 left_coordinate = (int) recognition.getLeft();
                                 screen_width = recognition.getImageWidth();
                                 width = (int) recognition.getWidth();
@@ -163,7 +164,6 @@ public class tf_detection_webcam extends LinearOpMode {
                                     //left_boundary already expressed as the pixels from left edge
                                     power_center = (double) distance_to_boundary / left_boundary;
                                     telemetry.addData("#", "Drive left");
-                                    telemetry.addData("#", power_center);
                                 }
                                 //if on left half of screen
                                 else if (left_coordinate > left_boundary) {
@@ -178,6 +178,8 @@ public class tf_detection_webcam extends LinearOpMode {
                                 else {
                                     motor_center.setPower(0);
                                     is_gold_ahead = true;
+                                    telemetry.addData(">", is_gold_ahead);
+                                    telemetry.update();
                                     tfod.shutdown();
                                 }
                                 motor_center.setPower(power_center);
@@ -194,20 +196,20 @@ public class tf_detection_webcam extends LinearOpMode {
                     }
                 }
                 //future improvement dont shutdown the tensorflow library but use the size of the bound box to determine the proximity to the mineral
-                if(is_gold_ahead) {
-                    //go forward
-                    //TODO: time based driving
-                    motor_right.setPower(0.5);
-                    motor_left.setPower(0.5);
-                    runtime.reset();
-                    while (opModeIsActive() && (runtime.seconds() < 1.0)) {
-                        telemetry.addData("Path", "Elapsed", runtime.seconds());
-                        telemetry.update();
-                    }
-                    motor_right.setPower(0);
-                    motor_left.setPower(0);
-
-                }
+//                if(is_gold_ahead) {
+//                    //go forward
+//                    //TODO: time based driving
+//                    motor_right.setPower(0.5);
+//                    motor_left.setPower(0.5);
+//                    runtime.reset();
+//                    while (opModeIsActive() && (runtime.seconds() < 1.0)) {
+//                        telemetry.addData("Path", "Elapsed", runtime.seconds());
+//                        telemetry.update();
+//                    }
+//                    motor_right.setPower(0);
+//                    motor_left.setPower(0);
+//
+//                }
 
 
 

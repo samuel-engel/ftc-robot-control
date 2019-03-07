@@ -52,7 +52,6 @@ public class arm_test extends LinearOpMode {
 
     // Define class members
     DcMotor motor;
-    double  power   = 0;
     double left_trigger, right_trigger, power_center;
 
 
@@ -74,14 +73,16 @@ public class arm_test extends LinearOpMode {
             left_trigger = 0.0 - this.gamepad1.left_trigger;
             right_trigger = this.gamepad1.right_trigger;
             power_center = left_trigger + right_trigger;
+            telemetry.addData(">", left_trigger);
+            telemetry.addData(">", right_trigger);
 
             // Display the current value
-            telemetry.addData("Motor Power", "%5.2f", power);
+            telemetry.addData("Motor Power", "%5.2f", power_center);
             telemetry.addData(">", "Press Stop to end test." );
             telemetry.update();
 
             // Set the motor to the new power and pause;
-            motor.setPower(power);
+            motor.setPower(power_center);
         }
 
         // Turn off motor and signal done;
