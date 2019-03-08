@@ -9,14 +9,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class timed_forward extends LinearOpMode {
     // Define class members
     DcMotor motor_left, motor_right;
-    double  power_left, power_right;
+    double  power;
     private ElapsedTime runtime = new ElapsedTime();
     Boolean interupt = false;
 
 
     @Override
     public void runOpMode() {
-        power_left = power_right = 0;
+        power = 0.3;
         motor_left = hardwareMap.get(DcMotor.class, "left_drive");
         motor_right = hardwareMap.get(DcMotor.class, "right_drive");
 
@@ -32,8 +32,8 @@ public class timed_forward extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            motor_left.setPower(0.3);
-            motor_right.setPower(0.3);
+            motor_left.setPower(power);
+            motor_right.setPower(power);
             telemetry.addData(">", runtime.seconds());
             runtime.reset();
             while (opModeIsActive() && (runtime.seconds() < 2.0) && !interupt) {
@@ -45,23 +45,23 @@ public class timed_forward extends LinearOpMode {
             }
 
 //            Backwards
-            motor_left.setPower(-0.3);
-            motor_right.setPower(-0.3);
-            runtime.reset();
-            while (opModeIsActive() && (runtime.seconds() < 2.0) && !interupt) {
-                interupt = this.gamepad1.a;
-                telemetry.addData("Path", "backward %2.5f S Elapsed", runtime.seconds());
-                telemetry.update();
-            }
-
-            // turn
-//            motor_left.setPower(0.5);
-//            motor_right.setPower(-0.5);
+//            motor_left.setPower(-power);
+//            motor_right.setPower(-power);
 //            runtime.reset();
-//            while (opModeIsActive() && (runtime.seconds() < 1.0) && !interupt) {
-//                telemetry.addData("Path", "sideways %2.5f S Elapsed", runtime.seconds());
+//            while (opModeIsActive() && (runtime.seconds() < 2.0) && !interupt) {
+//                interupt = this.gamepad1.a;
+//                telemetry.addData("Path", "backward %2.5f S Elapsed", runtime.seconds());
 //                telemetry.update();
 //            }
+
+            // turn
+            motor_left.setPower(power);
+            motor_right.setPower(-power);
+            runtime.reset();
+            while (opModeIsActive() && (runtime.seconds() < 1.0) && !interupt) {
+                telemetry.addData("Path", "sideways %2.5f S Elapsed", runtime.seconds());
+                telemetry.update();
+            }
 
             motor_right.setPower(0);
             motor_left.setPower(0);
