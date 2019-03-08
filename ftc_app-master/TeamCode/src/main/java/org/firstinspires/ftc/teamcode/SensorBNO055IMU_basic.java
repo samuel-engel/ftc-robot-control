@@ -31,10 +31,9 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
@@ -48,16 +47,16 @@ import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import java.util.Locale;
 
 /**
- * {@link SensorBNO055IMU} gives a short demo on how to use the BNO055 Inertial Motion Unit (IMU) from AdaFruit.
+ * {@link SensorBNO055IMU_basic} gives a short demo on how to use the BNO055 Inertial Motion Unit (IMU) from AdaFruit.
  *
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  *
  * @see <a href="http://www.adafruit.com/products/2472">Adafruit IMU</a>
  */
-@TeleOp(name = "Sensor: BNO055 IMU", group = "Sensor")
-//@Disabled                            // Comment this out to add to the opmode list
-public class SensorBNO055IMU extends LinearOpMode
+@TeleOp(name = "Sensor: BNO055 IMU basic", group = "Sensor")
+@Disabled                            // Comment this out to add to the opmode list
+public class SensorBNO055IMU_basic extends LinearOpMode
     {
     //----------------------------------------------------------------------------------------------
     // State
@@ -70,27 +69,11 @@ public class SensorBNO055IMU extends LinearOpMode
     Orientation angles;
     Acceleration gravity;
 
-    DcMotor motor_left, motor_right;
-    double  power;
-    private ElapsedTime runtime = new ElapsedTime();
-    Boolean interupt = false;
-    int target_angle = 90;
-
     //----------------------------------------------------------------------------------------------
     // Main logic
     //----------------------------------------------------------------------------------------------
 
     @Override public void runOpMode() {
-
-        power = 0.3;
-        motor_left = hardwareMap.get(DcMotor.class, "left_drive");
-        motor_right = hardwareMap.get(DcMotor.class, "right_drive");
-
-        // Establishing the initial direction of the motors
-        motor_right.setDirection(DcMotor.Direction.REVERSE);
-        motor_left.setDirection(DcMotor.Direction.FORWARD);
-
-
 
         // Set up the parameters with which we will use our IMU. Note that integration
         // algorithm here just reports accelerations to the logcat log; it doesn't actually
@@ -112,10 +95,6 @@ public class SensorBNO055IMU extends LinearOpMode
         // Set up our telemetry dashboard
         composeTelemetry();
 
-        // Wait for the start button
-        telemetry.addData(">", "Ready" );
-        telemetry.update();
-
         // Wait until we're told to go
         waitForStart();
 
@@ -124,29 +103,7 @@ public class SensorBNO055IMU extends LinearOpMode
 
         // Loop and update the dashboard
         while (opModeIsActive()) {
-            // turn
-            //left positive right negative
-
-
-            motor_left.setPower(power);
-            motor_right.setPower(-power);
-            runtime.reset();
-//            telemetry.addData(">", (angles.firstAngle > -target_angle));
-//            telemetry.addData(">", (target_angle<=360));
-
-            while (opModeIsActive() && (angles.firstAngle > -target_angle) && !interupt && angles.firstAngle < 0) {
-                interupt = this.gamepad1.a;
-                telemetry.addData(">", "%2.5f seconds elapsed", runtime.seconds());
-                telemetry.update();
-            }
-
-            motor_right.setPower(0);
-            motor_left.setPower(0);
             telemetry.update();
-            target_angle += 90;
-            sleep(5000);
-
-
         }
     }
 
