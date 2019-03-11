@@ -90,9 +90,6 @@ public class turn_45 extends LinearOpMode
         motor_right.setDirection(DcMotor.Direction.REVERSE);
         motor_left.setDirection(DcMotor.Direction.FORWARD);
 
-        int deg_reading = 45;
-        String direction = "left";
-        turn(deg_reading, direction);
 
 
         // Set up the parameters with which we will use our IMU. Note that integration
@@ -113,7 +110,7 @@ public class turn_45 extends LinearOpMode
         imu.initialize(parameters);
 
         // Set up our telemetry dashboard
-        composeTelemetry();
+//        composeTelemetry();
 
         // Wait for the start button
         telemetry.addData(">", "Ready" );
@@ -140,10 +137,30 @@ public class turn_45 extends LinearOpMode
 
 
     private void turn(int degree, String direction) {
-        motor_left.setPower(1.0);
-        motor_right.setPower(-1.0);
+        int min_range;
+        int max_range;
+        if(direction == "left"){
+            min_range = 0;
+            max_range = degree;
+            motor_left.setPower(1.0);
+            motor_right.setPower(-1.0);
+        }
+        else if(direction == "right"){
+             min_range = -degree;
+             max_range = 0;
+             motor_left.setPower(-1.0);
+             motor_right.setPower(1.0);
+        }
+        else {
+            min_range = 0;
+            max_range = 0;
+            motor_left.setPower(0.0);
+            motor_right.setPower(0.0);
+            telemetry.addData(">", "Incorrect input: use either left or right");
+            telemetry.update();
+        }
         runtime.reset();
-        while(opModeIsActive() && angles.firstAngle < degree){
+        while(opModeIsActive() && min_range <= angles.firstAngle && angles.firstAngle <= max_range){
             telemetry.addData(">", "%2.5f seconds elapsed", runtime.seconds());
             telemetry.addData(">", "Turning left");
             telemetry.update();
