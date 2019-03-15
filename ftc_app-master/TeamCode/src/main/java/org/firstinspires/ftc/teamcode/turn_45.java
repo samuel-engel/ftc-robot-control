@@ -159,10 +159,14 @@ public class turn_45 extends LinearOpMode
             telemetry.addData(">", "Incorrect input: use either left or right");
             telemetry.update();
         }
+        telemetry.addData("> min - ", min_range);
+        telemetry.addData("> max - ", max_range);
+        telemetry.update();
         runtime.reset();
         while(opModeIsActive() && min_range <= angles.firstAngle && angles.firstAngle <= max_range){
             telemetry.addData(">", "%2.5f seconds elapsed", runtime.seconds());
-            telemetry.addData(">", "Turning left");
+            telemetry.addData("> turning ", direction);
+            telemetry.addData("> current angle - ", angles.firstAngle);
             telemetry.update();
         }
         motor_right.setPower(0);
