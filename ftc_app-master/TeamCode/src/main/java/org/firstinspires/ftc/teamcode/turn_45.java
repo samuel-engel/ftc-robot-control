@@ -70,11 +70,9 @@ public class turn_45 extends LinearOpMode
     Acceleration gravity;
     Position position;
 
-    DcMotor motor_left, motor_right;
+    DcMotor motor_left, motor_right, motor_center;
     double  power;
     private ElapsedTime runtime = new ElapsedTime();
-    Boolean interupt = false;
-    int target_angle = 90;
 
     //----------------------------------------------------------------------------------------------
     // Main logic
@@ -128,9 +126,10 @@ public class turn_45 extends LinearOpMode
             //left positive right negative
 
             telemetry.addData(">", position);
-            
+
             turn(45, "left");
             sleep(5000);
+//            go(1.0, "up", 5);
 
 
         }
@@ -174,6 +173,42 @@ public class turn_45 extends LinearOpMode
         motor_left.setPower(0);
 
     }
+    private void go(double power, String direction, int distance) {
+
+        switch(direction) {
+            case "left":
+                motor_center.setPower(power);
+                break;
+            case "right":
+                motor_center.setPower(-power);
+                break;
+            case "up":
+                motor_left.setPower(power);
+                motor_right.setPower(power);
+                break;
+            case "down":
+                motor_left.setPower(-power);
+                motor_right.setPower(-power);
+                break;
+            default:
+                motor_left.setPower(0);
+                motor_right.setPower(0);
+                motor_center.setPower(0);
+        }
+
+        telemetry.addData("> direction - ", direction);
+        telemetry.update();
+        runtime.reset();
+        /*while(opModeIsActive() && current_distance < distance){
+            telemetry.addData(">", "%2.5f seconds elapsed", runtime.seconds());
+            telemetry.addData("> going ", direction);
+            telemetry.addData("> current distance ", current_distance);
+            telemetry.update();
+        }*/
+        motor_right.setPower(0);
+        motor_left.setPower(0);
+
+    }
 
     //----------------------------------------------------------------------------------------------
     // Telemetry Configuration
@@ -191,7 +226,6 @@ public class turn_45 extends LinearOpMode
                 angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
                 gravity  = imu.getGravity();
                 position = imu.getPosition();
-
 //                }
 //            });
 
