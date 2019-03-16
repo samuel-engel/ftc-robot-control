@@ -11,6 +11,7 @@ public class single_joystick_drive extends LinearOpMode {
     DcMotor motor_left, motor_right, motor_center;
     double  power_left, power_right, power_center;
     double right_x, right_y, R_plus_L, R_minus_L, left_trigger, right_trigger;
+    int exponent = 1;
 
     @Override
     public void runOpMode() {
@@ -49,11 +50,25 @@ public class single_joystick_drive extends LinearOpMode {
             telemetry.addData("left", power_left*power_left*power_left);
             telemetry.update();
 
-            // Set power with quadratic easing in
-            motor_right.setPower(power_right);
-            motor_left.setPower(power_left);
+            // Set power with quadratic easing in??
+
+            //basic
+//            motor_right.setPower(power_right);
+//            motor_left.setPower(power_left);
+
+            motor_right.setPower((int) power_right^exponent);
+            motor_left.setPower((int) power_left^exponent);
 
             motor_center.setPower(power_center);
+
+            telemetry.addData(">", exponent);
+            if(this.gamepad1.dpad_up){
+                exponent ++;
+            }
+            else if(this.gamepad1.dpad_down){
+                exponent --;
+            }
+            telemetry.addData(">", exponent);
         }
 
         telemetry.addData(">", "Done ._.");

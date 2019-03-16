@@ -61,7 +61,7 @@ public class SensorREV2mDistance extends LinearOpMode {
     public void runOpMode() {
         // you can use this as a regular DistanceSensor.
         sensorRange = hardwareMap.get(DistanceSensor.class, "sensor_range");
-
+        double distance;
         // you can also cast this to a Rev2mDistanceSensor if you want to use added
         // methods associated with the Rev2mDistanceSensor class.
         Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor)sensorRange;
@@ -75,12 +75,17 @@ public class SensorREV2mDistance extends LinearOpMode {
             telemetry.addData("deviceName",sensorRange.getDeviceName() );
             telemetry.addData("range", String.format("%.01f mm", sensorRange.getDistance(DistanceUnit.MM)));
             telemetry.addData("range", String.format("%.01f cm", sensorRange.getDistance(DistanceUnit.CM)));
+            distance = sensorRange.getDistance(DistanceUnit.CM);
             telemetry.addData("range", String.format("%.01f m", sensorRange.getDistance(DistanceUnit.METER)));
             telemetry.addData("range", String.format("%.01f in", sensorRange.getDistance(DistanceUnit.INCH)));
-
             // Rev2mDistanceSensor specific methods.
             telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getModelID()));
             telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight.didTimeoutOccur()));
+
+//            if(distance < 10.0) {
+//                telemetry.addData(">", "too close");
+//            }
+
 
             telemetry.update();
         }

@@ -130,6 +130,9 @@ public class turn_45 extends LinearOpMode
             turn(45, "left");
             sleep(5000);
 //            go(1.0, "up", 5);
+            /*if(this.gamepad1.dpad_up) {
+
+            }*/
 
 
         }
@@ -199,6 +202,7 @@ public class turn_45 extends LinearOpMode
         telemetry.addData("> direction - ", direction);
         telemetry.update();
         runtime.reset();
+        //figure out a way to capture distance
         /*while(opModeIsActive() && current_distance < distance){
             telemetry.addData(">", "%2.5f seconds elapsed", runtime.seconds());
             telemetry.addData("> going ", direction);
