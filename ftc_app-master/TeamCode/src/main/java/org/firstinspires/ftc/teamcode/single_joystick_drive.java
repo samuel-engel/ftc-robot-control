@@ -56,19 +56,20 @@ public class single_joystick_drive extends LinearOpMode {
 //            motor_right.setPower(power_right);
 //            motor_left.setPower(power_left);
 
-            motor_right.setPower((int) power_right^exponent);
-            motor_left.setPower((int) power_left^exponent);
+            motor_right.setPower(Math.pow(power_right,exponent));
+            motor_left.setPower(Math.pow(power_left,exponent));
 
             motor_center.setPower(power_center);
 
             telemetry.addData(">", exponent);
             if(this.gamepad1.dpad_up){
-                exponent ++;
+                exponent = 2;
             }
             else if(this.gamepad1.dpad_down){
-                exponent --;
+                exponent = 3;
             }
             telemetry.addData(">", exponent);
+            telemetry.update();
         }
 
         telemetry.addData(">", "Done ._.");

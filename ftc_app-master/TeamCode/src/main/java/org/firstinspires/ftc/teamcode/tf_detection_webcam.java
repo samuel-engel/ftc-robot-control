@@ -53,7 +53,7 @@ public class tf_detection_webcam extends LinearOpMode {
     private static final String VUFORIA_KEY = "AZVtCBn/////AAABmc0ZBKXorUd9jx9puP8gcV96rgljk0hDKL2staD0PinAX8J8c8P/UubaAwj+waF8pY3SKAGGxDh7ZfSCgr30RKxBJ/UfJkUmCbY3q8OhOGkwaSWrNk4A/BR5Sfzbw/VFRofB9n0e9jYBCJe4Rxm2kcOKa0VhER/r7VEgI2ZUhGN58BQN6ZY8j7+QUHlLTFsMm9IOAyqOc1C4QPHc5/T0tCG/mKbXOsY6l7mI6XqjUB/UmBl7I+1VhPR3hsoHJelnGqkp+uW5BqMdWwIaz7wd5D0v6Y3ZW33MjN348C32rAlwP4D4LPbI1OqSBFtS544AjbK97zojViEy1i534ykZs5MjvJYXVGiHgDxUSeMYGzOt";
     private ElapsedTime runtime = new ElapsedTime();
 
-    double  power_center;
+    double  power_center = 0;
     DcMotor motor_left, motor_right, motor_center;
 
     int left_coordinate, screen_width, width, left_boundary, distance_to_boundary;
@@ -141,7 +141,7 @@ public class tf_detection_webcam extends LinearOpMode {
                         for (Recognition recognition : updatedRecognitions) {
                             //if one of the recognized objects is the gold mineral
                             //LABEL_GOLD_MINERAL
-                            if (recognition.getLabel().equals(LABEL_SILVER_MINERAL)) {
+                            if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
                                 left_coordinate = (int) recognition.getLeft();
                                 screen_width = recognition.getImageWidth();
                                 width = (int) recognition.getWidth();
@@ -182,7 +182,8 @@ public class tf_detection_webcam extends LinearOpMode {
                                     telemetry.update();
                                     tfod.shutdown();
                                 }
-                                motor_center.setPower(power_center);
+                                //SET POWER HERE
+//                                motor_center.setPower(power_center);
                                 telemetry.addData("#", power_center);
 
                             }
@@ -193,6 +194,9 @@ public class tf_detection_webcam extends LinearOpMode {
                             }
                         }
                         telemetry.update();
+                    }
+                    else {
+                        motor_center.setPower(0);
                     }
                 }
                 //future improvement dont shutdown the tensorflow library but use the size of the bound box to determine the proximity to the mineral

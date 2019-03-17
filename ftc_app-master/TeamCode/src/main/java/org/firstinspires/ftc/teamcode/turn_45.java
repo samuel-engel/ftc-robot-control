@@ -69,6 +69,7 @@ public class turn_45 extends LinearOpMode
     Orientation angles;
     Acceleration gravity;
     Position position;
+    Velocity velocity;
 
     DcMotor motor_left, motor_right, motor_center;
     double  power;
@@ -80,7 +81,6 @@ public class turn_45 extends LinearOpMode
 
     @Override public void runOpMode() {
 
-        power = 0.3;
         motor_left = hardwareMap.get(DcMotor.class, "left_drive");
         motor_right = hardwareMap.get(DcMotor.class, "right_drive");
 
@@ -126,9 +126,9 @@ public class turn_45 extends LinearOpMode
             //left positive right negative
 
             telemetry.addData(">", position);
-
-            turn(45, "left");
-            sleep(5000);
+            telemetry.update();
+            turn(45, "left", 0.3);
+//            sleep(5000);
 //            go(1.0, "up", 5);
             /*if(this.gamepad1.dpad_up) {
 
@@ -139,20 +139,20 @@ public class turn_45 extends LinearOpMode
     }
 
 
-    private void turn(int degree, String direction) {
+    private void turn(int degree, String direction, double power) {
         int min_range;
         int max_range;
         if(direction == "left"){
             min_range = 0;
             max_range = degree;
-            motor_left.setPower(1.0);
-            motor_right.setPower(-1.0);
+            motor_left.setPower(-power);
+            motor_right.setPower(power);
         }
         else if(direction == "right"){
              min_range = -degree;
              max_range = 0;
-             motor_left.setPower(-1.0);
-             motor_right.setPower(1.0);
+             motor_left.setPower(power);
+             motor_right.setPower(-power);
         }
         else {
             min_range = 0;
@@ -222,16 +222,18 @@ public class turn_45 extends LinearOpMode
 
         // At the beginning of each telemetry update, grab a bunch of data
         // from the IMU that we will then display in separate lines.
-//        telemetry.addAction(new Runnable() { @Override public void run()
-//                {
+        telemetry.addAction(new Runnable() { @Override public void run()
+                {
                 // Acquiring the angles is relatively expensive; we don't want
                 // to do that in each of the three items that need that info, as that's
                 // three times the necessary expense.
+
                 angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
                 gravity  = imu.getGravity();
                 position = imu.getPosition();
-//                }
-//            });
+                velocity = imu.getVelocity();
+                }
+            });
 
         /*telemetry.addLine()
             .addData("status", new Func<String>() {

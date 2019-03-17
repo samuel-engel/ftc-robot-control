@@ -67,6 +67,7 @@ public class SensorBNO055IMU_basic extends LinearOpMode
     // State used for updating telemetry
     Orientation angles;
     Acceleration gravity;
+    Position position;
 
     //----------------------------------------------------------------------------------------------
     // Main logic
@@ -121,6 +122,7 @@ public class SensorBNO055IMU_basic extends LinearOpMode
                 // three times the necessary expense.
                 angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
                 gravity  = imu.getGravity();
+                position = imu.getPosition();
                 }
             });
 
@@ -159,6 +161,11 @@ public class SensorBNO055IMU_basic extends LinearOpMode
                     return gravity.toString();
                     }
                 })
+            .addData("position", new Func<String>() {
+                @Override public String value() {
+                    return position.toString();
+                }
+            })
             .addData("mag", new Func<String>() {
                 @Override public String value() {
                     return String.format(Locale.getDefault(), "%.3f",
