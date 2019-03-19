@@ -9,21 +9,20 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class timed_forward extends LinearOpMode {
     // Define class members
     DcMotor motor_left, motor_right;
-    double  power;
+    double  push_power, push_time;
     private ElapsedTime runtime = new ElapsedTime();
-    Boolean interupt = false;
 
 
     @Override
     public void runOpMode() {
-        power = 0.3;
+        push_power = 0.3;
+        push_time = 1.0;
         motor_left = hardwareMap.get(DcMotor.class, "left_drive");
         motor_right = hardwareMap.get(DcMotor.class, "right_drive");
 
         // Establishing the initial direction of the motors
         motor_right.setDirection(DcMotor.Direction.REVERSE);
         motor_left.setDirection(DcMotor.Direction.FORWARD);
-
 
         // Wait for the start button
         telemetry.addData(">", "Press Start to control the robot via tank drive" );
@@ -32,36 +31,46 @@ public class timed_forward extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            motor_left.setPower(power);
-            motor_right.setPower(power);
-            telemetry.addData(">", runtime.seconds());
+            if(this.gamepad1.dpad_up){
+                push_power += 0.1;
+                sleep(1000);
+            }
+            else if (this.gamepad1.dpad_down){
+                push_power -= 0.1;
+                sleep(1000);
+            }
+            else if (this.gamepad1.dpad_right){
+                push_time += 1.0;
+                sleep(1000);
+
+            }
+            else if (this.gamepad1.dpad_left) {
+                push_time -= 1.0;
+                sleep(1000);
+
+            }
+            telemetry.addData(">", push_power);
+            telemetry.addData(">", push_time);
+            telemetry.update();
+
+            motor_left.setPower(push_power);
+            motor_right.setPower(push_power);
+
             runtime.reset();
-            while (opModeIsActive() && (runtime.seconds() < 2.0) && !interupt) {
-                interupt = this.gamepad1.a;
+            while (opModeIsActive() && (runtime.seconds() < push_time)) {
                 telemetry.addData(">", "forward %2.5f S Elapsed", runtime.seconds());
-                telemetry.addData(">", interupt);
-                telemetry.addData(">", runtime);
                 telemetry.update();
             }
 
 //            Backwards
-//            motor_left.setPower(-power);
-//            motor_right.setPower(-power);
-//            runtime.reset();
-//            while (opModeIsActive() && (runtime.seconds() < 2.0) && !interupt) {
-//                interupt = this.gamepad1.a;
-//                telemetry.addData("Path", "backward %2.5f S Elapsed", runtime.seconds());
-//                telemetry.update();
-//            }
-
-            // turn
-            motor_left.setPower(power);
-            motor_right.setPower(-power);
+            motor_left.setPower(-push_power);
+            motor_right.setPower(-push_power);
             runtime.reset();
-            while (opModeIsActive() && (runtime.seconds() < 1.0) && !interupt) {
-                telemetry.addData("Path", "sideways %2.5f S Elapsed", runtime.seconds());
+            while (opModeIsActive() && (runtime.seconds() < (push_time/2))) {
+                telemetry.addData("Path", "backwards %2.5f S Elapsed", runtime.seconds());
                 telemetry.update();
             }
+
 
             motor_right.setPower(0);
             motor_left.setPower(0);
