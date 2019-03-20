@@ -183,7 +183,7 @@ public class tf_detection_webcam extends LinearOpMode {
                                     tfod.shutdown();
                                 }
                                 //SET POWER HERE
-//                                motor_center.setPower(power_center);
+                                motor_center.setPower(power_center);
                                 telemetry.addData("#", power_center);
 
                             }

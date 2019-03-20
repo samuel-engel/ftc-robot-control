@@ -30,7 +30,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -95,11 +94,11 @@ public class turn_45 extends LinearOpMode
         // provide positional information.
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        //parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
         parameters.loggingEnabled      = true;
         parameters.loggingTag          = "IMU";
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        //parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
 
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
@@ -111,23 +110,24 @@ public class turn_45 extends LinearOpMode
         composeTelemetry();
 
         // Wait for the start button
-        telemetry.addData(">", "Ready" );
+        telemetry.addData(">", "Loaded" );
         telemetry.update();
 
         // Wait until we're told to go
         waitForStart();
 
         // Start the logging of measured acceleration
-        imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
+        //imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
         // Loop and update the dashboard
         while (opModeIsActive()) {
             // turn
             //left positive right negative
 
-            telemetry.addData(">", position);
+            telemetry.addData(">", angles.firstAngle);
             telemetry.update();
-            turn(45, "left", 0.3);
+            turn(90, "left", 0.8);
+            sleep(10000);
 //            sleep(5000);
 //            go(1.0, "up", 5);
             /*if(this.gamepad1.dpad_up) {
@@ -140,6 +140,7 @@ public class turn_45 extends LinearOpMode
 
 
     private void turn(int degree, String direction, double power) {
+        angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         int min_range;
         int max_range;
         if(direction == "left"){

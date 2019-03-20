@@ -17,14 +17,17 @@ public class push_mineral extends LinearOpMode {
     public void runOpMode() {
         //set initial push power and duration
         push_power = 0.3;
-        push_time = 1.0;
+        push_time = 3.0;
 
         motor_left = hardwareMap.get(DcMotor.class, "left_drive");
         motor_right = hardwareMap.get(DcMotor.class, "right_drive");
+        motor_center = hardwareMap.get(DcMotor.class, "center_drive");
 
         // establish the initial direction of the motors
         motor_right.setDirection(DcMotor.Direction.REVERSE);
         motor_left.setDirection(DcMotor.Direction.FORWARD);
+        motor_center.setDirection(DcMotor.Direction.FORWARD);
+
 
         // Wait for the start button
         telemetry.addData(">", "Press Start to push robot and return" );
@@ -52,41 +55,43 @@ public class push_mineral extends LinearOpMode {
                 sleep(1000);
 
             }
-            telemetry.addData(">", push_power);
-            telemetry.addData(">", push_time);
-            telemetry.update();
+//            push_and_reverse(push_power,push_time);
+//            sleep(5000);
 
-
-            //go forwards
-            motor_left.setPower(push_power);
-            motor_right.setPower(push_power);
-            runtime.reset();
-            while (opModeIsActive() && (runtime.seconds() < push_time)) {
-                telemetry.addData(">", "forward %2.5f S Elapsed", runtime.seconds());
-                telemetry.update();
-            }
-
-            //go backwards
-            motor_left.setPower(-push_power);
-            motor_right.setPower(-push_power);
-            runtime.reset();
-            while (opModeIsActive() && (runtime.seconds() < (push_time/2))) {
-                telemetry.addData("Path", "backwards %2.5f S Elapsed", runtime.seconds());
-                telemetry.update();
-            }
-            //stop
-            motor_right.setPower(0);
-            motor_left.setPower(0);
-            telemetry.update();
-            sleep(5000);
+            go(0.3, "left", 2.0);
+            go(0.3, "up", 2.0);
         }
 
         telemetry.addData(">", "Done ._.");
         telemetry.update();
 
     }
+    private void push_and_reverse(double push_power, double push_time){
+        telemetry.addData(">", push_power);
+        telemetry.addData(">", push_time);
 
-    private void go(double power, String direction, int time) {
+        //go forwards
+        motor_left.setPower(push_power);
+        motor_right.setPower(push_power);
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < push_time)) {
+
+        }
+
+        //go backwards
+        motor_left.setPower(-push_power);
+        motor_right.setPower(-push_power);
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < (push_time/2))) {
+
+        }
+        //stop
+        motor_right.setPower(0);
+        motor_left.setPower(0);
+        telemetry.update();
+    }
+
+    private void go(double power, String direction, double time) {
 
         switch(direction) {
             case "left":
