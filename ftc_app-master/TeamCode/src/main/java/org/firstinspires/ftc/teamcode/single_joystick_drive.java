@@ -46,8 +46,9 @@ public class single_joystick_drive extends LinearOpMode {
             power_right = (R_plus_L+R_minus_L)/2;
 
             power_left = (R_plus_L-R_minus_L)/2;
-            telemetry.addData("right", power_right*power_right*power_right );
-            telemetry.addData("left", power_left*power_left*power_left);
+            telemetry.addData("right", power_right );
+            telemetry.addData("left", power_left);
+            telemetry.addData("center", power_center);
             telemetry.update();
 
 

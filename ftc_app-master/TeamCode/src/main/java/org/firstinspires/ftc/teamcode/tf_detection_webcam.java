@@ -29,8 +29,8 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -43,7 +43,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import java.util.List;
 
 
-@TeleOp(name = "webcam detection", group = "Concept")
+@Autonomous(name = "webcam detection", group = "Concept")
 //@Disabled
 public class tf_detection_webcam extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
@@ -113,7 +113,7 @@ public class tf_detection_webcam extends LinearOpMode {
 
 
                         // if three objects detected, find the position of the golden mineral
-                        if (updatedRecognitions.size() == 3 && gold_mineral_position == null) {
+                        /*if (updatedRecognitions.size() == 3 && gold_mineral_position == null) {
                             int goldMineralX = -1;
                             int silverMineral1X = -1;
                             int silverMineral2X = -1;
@@ -135,7 +135,7 @@ public class tf_detection_webcam extends LinearOpMode {
                                     gold_mineral_position = "center";
                                 }
                             }
-                        }
+                        }*/
 
                         //for every recognized object
                         for (Recognition recognition : updatedRecognitions) {
@@ -162,14 +162,16 @@ public class tf_detection_webcam extends LinearOpMode {
                                 if (left_coordinate < left_boundary) {
                                     //the decimal percentage of distance-to-boundary of the edge-to-boundary size in pixels
                                     //left_boundary already expressed as the pixels from left edge
-                                    power_center = (double) distance_to_boundary / left_boundary;
+//                                    power_center = (double) distance_to_boundary / left_boundary;
+                                    power_center = 0.4;
                                     telemetry.addData("#", "Drive left");
                                 }
                                 //if on left half of screen
                                 else if (left_coordinate > left_boundary) {
                                     //the decimal percentage of distance-to-boundary of the edge-to-boundary size in pixels
                                     //left_boundary + width is equivalent to (screen_width + width) / 2;
-                                    power_center = (double) distance_to_boundary / (left_boundary + width);
+//                                    power_center = (double) distance_to_boundary / (left_boundary + width);
+                                    power_center = -0.4;
                                     telemetry.addData("#", "Drive right");
 
                                 }
@@ -190,13 +192,17 @@ public class tf_detection_webcam extends LinearOpMode {
                             else {
                                 //look around if nothing happens?
                                 motor_center.setPower(0);
+                                telemetry.addData(">", "no golden mineral");
+                                telemetry.update();
 
                             }
                         }
                         telemetry.update();
                     }
                     else {
-                        motor_center.setPower(0);
+                        telemetry.addData(">", "nothing detected man");
+                        telemetry.update();
+//                        motor_center.setPower(0);
                     }
                 }
                 //future improvement dont shutdown the tensorflow library but use the size of the bound box to determine the proximity to the mineral
