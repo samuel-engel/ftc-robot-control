@@ -50,23 +50,25 @@ public class single_joystick_drive extends LinearOpMode {
             telemetry.addData("left", power_left*power_left*power_left);
             telemetry.update();
 
-            // Set power with quadratic easing in??
 
-            //basic
-//            motor_right.setPower(power_right);
-//            motor_left.setPower(power_left);
-
+            //output power with easing for better control
             motor_right.setPower(Math.pow(power_right,exponent));
             motor_left.setPower(Math.pow(power_left,exponent));
-
             motor_center.setPower(power_center);
+//          basic power output
+//          motor_right.setPower(power_right);
+//          motor_left.setPower(power_left);
 
+
+            //ability to change the exponent with gamepad for finding optimal easing function
             telemetry.addData(">", exponent);
             if(this.gamepad1.dpad_up){
-                exponent = 2;
+                exponent ++;
+                sleep(1000);
             }
             else if(this.gamepad1.dpad_down){
-                exponent = 3;
+                exponent --;
+                sleep(1000);
             }
             telemetry.addData(">", exponent);
             telemetry.update();
