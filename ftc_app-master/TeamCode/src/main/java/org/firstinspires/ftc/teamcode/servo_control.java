@@ -33,11 +33,15 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
+//TODO: Create collecting mechanism base on this
+//maybe incorporate arm_test
 
-@TeleOp(name = "Servo control", group = "Concept")
-//@Disabled
+@TeleOp(name = "Test: Servos", group = "Testing")
+
+
 public class servo_control extends LinearOpMode {
 
+    // Define class members
     static final double INCREMENT   = 0.01;     // amount to slew servo each CYCLE_MS cycle
     static final int    CYCLE_MS    =   50;     // period of each cycle
     static final double MAX_POS     =  1.0;     // Maximum rotational position

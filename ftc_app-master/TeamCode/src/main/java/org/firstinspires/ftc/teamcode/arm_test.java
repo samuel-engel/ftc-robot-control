@@ -33,61 +33,47 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-/**
- * This OpMode ramps a single motor speed up and down repeatedly until Stop is pressed.
- * The code is structured as a LinearOpMode
- *
- * This code assumes a DC motor configured with the name "left_drive" as is found on a pushbot.
- *
- * INCREMENT sets how much to increase/decrease the power each cycle
- * CYCLE_MS sets the update period.
- *
- * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
- */
-@TeleOp(name = "test arm", group = "Concept")
-//@Disabled
+
+
+@TeleOp(name = "Test: Extending Arm", group = "Testing")
 public class arm_test extends LinearOpMode {
 
-
     // Define class members
-    DcMotor motor;
-    double left_trigger, right_trigger, power_center;
+    DcMotor motor_arm;
+    double left_trigger, right_trigger, power_arm;
 
 
     @Override
     public void runOpMode() {
 
-        // Connect to motor (Assume standard left wheel)
-        // Change the text in quotes to match any motor name on your robot.
-        motor = hardwareMap.get(DcMotor.class, "arm_drive");
+        motor_arm = hardwareMap.get(DcMotor.class, "arm_drive");
 
         // Wait for the start button
-        telemetry.addData(">", "Press Start to run Motors." );
+        telemetry.addData(">", "Use right and left trigger to extend and retract the arm" );
         telemetry.update();
         waitForStart();
 
-        // Ramp motor speeds till stop pressed.
         while(opModeIsActive()) {
 
+            // combine the float value of both triggers
             left_trigger = 0.0 - this.gamepad1.left_trigger;
             right_trigger = this.gamepad1.right_trigger;
-            power_center = left_trigger + right_trigger;
+            power_arm = left_trigger + right_trigger;
+
             telemetry.addData(">", left_trigger);
             telemetry.addData(">", right_trigger);
 
             // Display the current value
-            telemetry.addData("Motor Power", "%5.2f", power_center);
+            telemetry.addData("Arm motor Power", "%5.2f", power_arm);
             telemetry.addData(">", "Press Stop to end test." );
             telemetry.update();
 
-            // Set the motor to the new power and pause;
-            motor.setPower(power_center);
+            // Set the motor_arm to the new power and pause;
+            motor_arm.setPower(power_arm);
         }
 
-        // Turn off motor and signal done;
-        motor.setPower(0);
-        telemetry.addData(">", "Done");
+        motor_arm.setPower(0);
+        telemetry.addData(">", "Motors stopped");
         telemetry.update();
 
     }

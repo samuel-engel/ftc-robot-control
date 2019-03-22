@@ -45,16 +45,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 import java.util.Locale;
 
-/**
- * {@link turn_45} gives a short demo on how to use the BNO055 Inertial Motion Unit (IMU) from AdaFruit.
- *
- * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
- *
- * @see <a href="http://www.adafruit.com/products/2472">Adafruit IMU</a>
- */
+//TODO: merge  with old imu class with working turn algorithm
+
 @TeleOp(name = "Turn 45", group = "Sensor")
-//@Disabled                            // Comment this out to add to the opmode list
+
 public class turn_45 extends LinearOpMode
     {
     //----------------------------------------------------------------------------------------------

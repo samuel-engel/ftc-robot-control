@@ -48,9 +48,10 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import java.util.List;
 import java.util.Locale;
 
+//TODO: Clean up
 
-@Autonomous(name = "webcam detection", group = "Concept")
-//@Disabled
+@Autonomous(name = "Main Autonomous", group = "Autonomous")
+
 public class tf_detection_webcam extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
@@ -297,7 +298,7 @@ public class tf_detection_webcam extends LinearOpMode {
     }
     private void go_to_depot(){
         go(0.5, "left", 2);
-        
+
     }
     private void turn(int degree, String direction, double power) {
         angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);

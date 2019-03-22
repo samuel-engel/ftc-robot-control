@@ -4,9 +4,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-@TeleOp(name = "Single Joystick Drive", group = "Control")
+@TeleOp(name = "Main Drive", group = "Control")
 
 public class single_joystick_drive extends LinearOpMode {
+
     // Define class members
     DcMotor motor_left, motor_right, motor_center;
     double  power_left, power_right, power_center;

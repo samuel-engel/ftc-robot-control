@@ -39,19 +39,12 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-/**
- * {@link SensorREV2mDistance} illustrates how to use the REV Robotics
- * Time-of-Flight Range Sensor.
- *
- * The op mode assumes that the range sensor is configured with a name of "sensor_range".
- *
- * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
- *
- * @see <a href="http://revrobotics.com">REV Robotics Web Page</a>
- */
+//TODO: Centering on wall
+
+
 @TeleOp(name = "Sensor: REV2mDistance", group = "Sensor")
-//@Disabled
+
+
 public class SensorREV2mDistance extends LinearOpMode {
 
     private DistanceSensor sensorRange;
