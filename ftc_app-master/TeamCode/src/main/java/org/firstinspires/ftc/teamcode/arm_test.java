@@ -33,8 +33,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 
-
+//TODO: touch sensor
 
 @TeleOp(name = "Test: Collection and Arm", group = "Testing")
 public class arm_test extends LinearOpMode {
@@ -42,16 +43,25 @@ public class arm_test extends LinearOpMode {
     // Define class members
     DcMotor motor_arm;
     CRServo servo_left, servo_right;
+    DigitalChannel digitalTouch;
+
     double left_trigger, right_trigger, power_arm;
-    Boolean collecting_in = false, collecting_out = false;
+    Boolean collecting_in, collecting_out, is_pressed;
 
 
     @Override
     public void runOpMode() {
+        collecting_in = collecting_out = is_pressed = false;
 
         motor_arm = hardwareMap.get(DcMotor.class, "arm_drive");
         servo_left = hardwareMap.crservo.get("servo_left");
         servo_left = hardwareMap.crservo.get("servo_right");
+
+        // get a reference to our digitalTouch object.
+        digitalTouch = hardwareMap.get(DigitalChannel.class, "sensor_digital");
+
+        // set the digital channel to input.
+        digitalTouch.setMode(DigitalChannel.Mode.INPUT);
 
         // Wait for the start button
         telemetry.addData(">", "Use right and left trigger to extend and retract the arm" );
@@ -65,6 +75,8 @@ public class arm_test extends LinearOpMode {
             right_trigger = this.gamepad1.right_trigger;
             power_arm = left_trigger + right_trigger;
 
+            is_pressed = !(digitalTouch.getState());
+
             if(this.gamepad2.dpad_up){
                 collecting_in = true;
                 collecting_out = false;
@@ -77,8 +89,6 @@ public class arm_test extends LinearOpMode {
                 collecting_in = false;
                 collecting_out = false;
             }
-
-
 
             if(collecting_in) {
                 servo_left.setPower(1.0);
@@ -95,15 +105,16 @@ public class arm_test extends LinearOpMode {
                 servo_right.setPower(0.0);
                 telemetry.addData(">", "not collecting");
             }
-            motor_arm.setPower(power_arm);
-
+            if(!is_pressed) {
+                motor_arm.setPower(power_arm);
+            }
             telemetry.addData("Arm motor Power", "%5.2f", power_arm);
             telemetry.addData(">", "Press Stop to end test." );
             telemetry.update();
         }
 
         motor_arm.setPower(0);
-        telemetry.addData(">", "Motors stopped");
+        telemetry.addData(">", "Done.");
         telemetry.update();
 
     }
