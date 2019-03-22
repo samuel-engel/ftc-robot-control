@@ -32,71 +32,86 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-//TODO: Centering on wall
-
-
-@TeleOp(name = "Sensor: REV2mDistance", group = "Sensor")
+@TeleOp(name = "Test: Wall centering", group = "Testing")
 
 
 public class SensorREV2mDistance extends LinearOpMode {
 
     private DistanceSensor sensorRange;
 
+    DcMotor motor_left, motor_right;
+    Boolean started_turing = false;
+
+    private ElapsedTime runtime = new ElapsedTime();
+
     @Override
     public void runOpMode() {
         // you can use this as a regular DistanceSensor.
         sensorRange = hardwareMap.get(DistanceSensor.class, "sensor_range");
+        motor_left = hardwareMap.get(DcMotor .class, "left_drive");
+        motor_right = hardwareMap.get(DcMotor.class, "right_drive");
+
+        // Establish the initial direction of the motors
+        motor_right.setDirection(DcMotor.Direction.REVERSE);
+        motor_left.setDirection(DcMotor.Direction.FORWARD);
+
         double new_distance, distance_cm;
         boolean wall_nearby = false;
-        // you can also cast this to a Rev2mDistanceSensor if you want to use added
-        // methods associated with the Rev2mDistanceSensor class.
-        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor)sensorRange;
 
-        telemetry.addData(">>", "Press start to continue");
+
+        telemetry.addData(">>", "Press start to center on a wall");
         telemetry.update();
 
         waitForStart();
         while(opModeIsActive()) {
-            // generic DistanceSensor methods.
-            telemetry.addData("deviceName",sensorRange.getDeviceName() );
 
-            // Rev2mDistanceSensor specific methods.
-            telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getModelID()));
-            telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight.didTimeoutOccur()));
             while(!wall_nearby){
                 distance_cm = sensorRange.getDistance(DistanceUnit.CM);
-                telemetry.addData("distance in cm: ", distance_cm);
-                //go
-                if(distance_cm < 10.0) {
-                    telemetry.addData(">", "wall ahead");
+                telemetry.addData("Distance in cm: ", distance_cm);
+//                go(0.5, "up", 1);
+                if(distance_cm < 20.0) {
+                    telemetry.addData("> ", "Wall ahead");
                     telemetry.update();
                     wall_nearby = true;
                 }
             }
             while(wall_nearby){
                 distance_cm = sensorRange.getDistance(DistanceUnit.CM);
-                telemetry.addData("distance in cm: ", distance_cm);
-                //turn left by few degrees
-                new_distance = sensorRange.getDistance(DistanceUnit.CM);
-                if(new_distance>distance_cm){
-                    //turn right
+                telemetry.addData("Distance in cm: ", distance_cm);
+
+                motor_right.setPower(-0.5);
+                motor_left.setPower(0.5);
+                runtime.reset();
+                while(opModeIsActive() && (runtime.seconds() < 0.5)){
+                    telemetry.addData(">", "%2.5f seconds elapsed", runtime.seconds());
+                    telemetry.update();
                 }
-                else if (new_distance<distance_cm){
-                    //turn left
+                motor_right.setPower(0);
+                motor_left.setPower(0);
+                new_distance = sensorRange.getDistance(DistanceUnit.CM);
+                if(new_distance<distance_cm && !started_turing){
+//                    turn(0.5, "right", 0.1);
+                    started_turing = true;
+                }
+                else if (new_distance>distance_cm && !started_turing){
+//                    turn(0.5, "left", 0.1);
+                    started_turing = true;
+
+                }
+                else {
+                    telemetry.addData("> centered ", "on wall");
                 }
 
             }
 
-
-
-            telemetry.update();
         }
     }
 
