@@ -35,7 +35,6 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 
-//TODO: touch sensor
 
 @TeleOp(name = "Test: Collection and Arm", group = "Testing")
 public class arm_test extends LinearOpMode {
@@ -105,6 +104,7 @@ public class arm_test extends LinearOpMode {
                 servo_right.setPower(0.0);
                 telemetry.addData(">", "not collecting");
             }
+
             if(!is_pressed) {
                 motor_arm.setPower(power_arm);
             }
