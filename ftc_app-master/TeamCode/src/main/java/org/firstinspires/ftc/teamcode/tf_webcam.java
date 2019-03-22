@@ -40,7 +40,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 import java.util.List;
 
-@TeleOp(name = "TensorFlow Webcam", group = "Default")
+@TeleOp(name = "Testing: TensorFlow Webcam", group = "Testing")
 
 public class tf_webcam extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";

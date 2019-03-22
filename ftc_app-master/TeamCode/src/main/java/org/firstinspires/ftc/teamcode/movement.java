@@ -40,9 +40,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-@TeleOp(name = "Test: Turning and Going", group = "Testing")
+@TeleOp(name = "Test: Turning; Going; Pushing", group = "Testing")
 
-public class turn_and_go extends LinearOpMode
+public class movement extends LinearOpMode
     {
 
     // The IMU sensor object

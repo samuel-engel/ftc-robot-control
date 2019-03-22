@@ -43,7 +43,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 @TeleOp(name = "Test: Wall centering", group = "Testing")
 
 
-public class SensorREV2mDistance extends LinearOpMode {
+public class wall_centering extends LinearOpMode {
 
     private DistanceSensor sensorRange;
 

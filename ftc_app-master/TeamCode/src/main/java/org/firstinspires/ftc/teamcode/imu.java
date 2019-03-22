@@ -46,7 +46,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import java.util.Locale;
 
 
-@TeleOp(name = "IMU Sensor", group = "Default")
+@TeleOp(name = "Test: IMU Sensor", group = "Testing")
 
 public class imu extends LinearOpMode
     {
