@@ -36,47 +36,34 @@ public class single_joystick_drive extends LinearOpMode {
             right_x = 0.0 - this.gamepad1.right_stick_x;
             right_y = 0.0 - this.gamepad1.right_stick_y;
 
-            // Combining the output of both triggers to get the center motor power
+            // Combine the output of both triggers to get the center motor power
             left_trigger = 0.0 - this.gamepad1.left_trigger;
             right_trigger = this.gamepad1.right_trigger;
             power_center = left_trigger + right_trigger;
 
-            // Translate joystick coordinates to motor powers
+            // Translate joystick x and y coordinates to the power for each motor
             R_plus_L = (1.0 - Math.abs(right_x))*right_y + right_y;
             R_minus_L =(1.0 - Math.abs(right_y))*right_x + right_x;
             power_right = (R_plus_L+R_minus_L)/2;
 
             power_left = (R_plus_L-R_minus_L)/2;
-            telemetry.addData("right", power_right );
-            telemetry.addData("left", power_left);
-            telemetry.addData("center", power_center);
+            telemetry.addData("Power right: ", power_right );
+            telemetry.addData("Power left: ", power_left);
+            telemetry.addData("Power center: ", power_center);
             telemetry.update();
 
 
-            //output power with easing for better control
-            motor_right.setPower(Math.pow(power_right,exponent));
-            motor_left.setPower(Math.pow(power_left,exponent));
+            motor_right.setPower(power_right);
+            motor_left.setPower(power_left);
             motor_center.setPower(power_center);
-//          basic power output
-//          motor_right.setPower(power_right);
-//          motor_left.setPower(power_left);
 
 
-            //ability to change the exponent with gamepad for finding optimal easing function
-            telemetry.addData(">", exponent);
-            if(this.gamepad1.dpad_up){
-                exponent ++;
-                sleep(1000);
-            }
-            else if(this.gamepad1.dpad_down){
-                exponent --;
-                sleep(1000);
-            }
-            telemetry.addData(">", exponent);
-            telemetry.update();
         }
+        motor_right.setPower(0);
+        motor_left.setPower(0);
+        motor_center.setPower(0);
 
-        telemetry.addData(">", "Done ._.");
+        telemetry.addData(">", "Done driving; all motors stopped");
         telemetry.update();
 
     }

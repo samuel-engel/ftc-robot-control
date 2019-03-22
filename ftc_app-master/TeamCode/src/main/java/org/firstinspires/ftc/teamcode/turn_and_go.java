@@ -35,38 +35,25 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.Position;
-import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 @TeleOp(name = "Test: Turning and Going", group = "Testing")
 
 public class turn_and_go extends LinearOpMode
     {
-    //----------------------------------------------------------------------------------------------
-    // State
-    //----------------------------------------------------------------------------------------------
-
+    
     // The IMU sensor object
     BNO055IMU imu;
 
-    // State used for updating telemetry
     Orientation angles;
-    Acceleration gravity;
-    Position position;
-    Velocity velocity;
+
 
     DcMotor motor_left, motor_right, motor_center;
-    double  power;
-    private ElapsedTime runtime = new ElapsedTime();
 
-    //----------------------------------------------------------------------------------------------
-    // Main logic
-    //----------------------------------------------------------------------------------------------
+    private ElapsedTime runtime = new ElapsedTime();
 
     @Override public void runOpMode() {
 
@@ -95,38 +82,14 @@ public class turn_and_go extends LinearOpMode
         waitForStart();
 
 
-        //WORKING EXAMPLE
-        /*while (opModeIsActive()) {
-            // turn
-            //left positive right negative
-
-            motor_left.setPower(power);
-            motor_right.setPower(-power);
-            runtime.reset();
-            while (opModeIsActive() && (angles.firstAngle > -90) && !interupt) {
-                interupt = this.gamepad1.a;
-                telemetry.addData("Path", "sideways %2.5f S Elapsed", runtime.seconds());
-                telemetry.update();
-            }
-
-            motor_right.setPower(0);
-            motor_left.setPower(0);
-            telemetry.update();
-            sleep(5000);
-
-        }*/
-
-        // Loop and update the dashboard
         while (opModeIsActive()) {
-            // turn
-            //left positive right negative
-
             telemetry.addData(">", angles.firstAngle);
             telemetry.update();
             turn(90, "left", 0.3);
+            sleep(1000);
             turn(90, "right", 0.3);
-            sleep(10000);
-            go(0.5, "up", 2.0);
+            sleep(1000);
+            turn(45, "left", 0.3);
 
         }
     }
@@ -162,6 +125,7 @@ public class turn_and_go extends LinearOpMode
         motor_left.setPower(0);
 
     }
+
     private void go(double power, String direction, double time) {
 
         switch(direction) {
@@ -192,6 +156,34 @@ public class turn_and_go extends LinearOpMode
             telemetry.addData(">", "%2.5f seconds elapsed", runtime.seconds());
             telemetry.update();
         }
+        motor_right.setPower(0);
+        motor_left.setPower(0);
+    }
+
+    private void push_and_reverse(double push_power, double push_time){
+        //go forwards
+        motor_left.setPower(push_power);
+        motor_right.setPower(push_power);
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < push_time)) {
+            telemetry.addData("Push power: ", push_power);
+            telemetry.addData("Push time: ", push_time);
+            telemetry.addData("Forward: ", " %2.5f S Elapsed", runtime.seconds());
+            telemetry.update();
+        }
+
+        //go backwards
+        motor_left.setPower(-push_power);
+        motor_right.setPower(-push_power);
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < (push_time/2))) {
+            telemetry.addData("Push power: ", push_power);
+            telemetry.addData("Push time: ", push_time);
+            telemetry.addData("Backward: ", " %2.5f S Elapsed", runtime.seconds());
+            telemetry.update();
+        }
+
+        //stop
         motor_right.setPower(0);
         motor_left.setPower(0);
     }
