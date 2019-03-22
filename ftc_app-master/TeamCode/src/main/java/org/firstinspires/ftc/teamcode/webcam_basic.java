@@ -42,7 +42,7 @@ import java.util.List;
 
 @TeleOp(name = "Testing: TensorFlow Webcam", group = "Testing")
 
-public class tf_webcam extends LinearOpMode {
+public class webcam_basic extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
     private static final String LABEL_SILVER_MINERAL = "Silver Mineral";

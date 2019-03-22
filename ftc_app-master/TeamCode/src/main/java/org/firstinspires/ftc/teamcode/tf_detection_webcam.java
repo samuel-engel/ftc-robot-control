@@ -48,6 +48,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import java.util.List;
 
 //TODO: Look around
+//if nothing happends in 15 seconds then just go straight
 //TODO: A copy for the second possibility; last step
 //TODO: Find a way to change parameters conveniently while running; IMPORTANT
 //TODO: Descending down with the arm ; easy look at collecting
@@ -243,6 +244,20 @@ public class tf_detection_webcam extends LinearOpMode {
         go(0.5, "up", 3);
         go(0.5, "left", 5); // or right depends on the side
 
+    }
+    private void look_around(){
+        motor_right.setPower(-0.5);
+        motor_left.setPower(0.5);
+        runtime.reset();
+        if(opModeIsActive() && (runtime.seconds() < 1)){
+
+        }
+        motor_right.setPower(0.5);
+        motor_left.setPower(-0.5);
+        runtime.reset();
+        if(opModeIsActive() && (runtime.seconds() < 1)){
+
+        }
     }
 
     //Movement functions
