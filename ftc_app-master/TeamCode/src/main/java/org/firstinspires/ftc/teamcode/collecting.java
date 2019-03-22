@@ -36,8 +36,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 
 
-@TeleOp(name = "Test: Collection and Arm", group = "Testing")
-public class arm_test extends LinearOpMode {
+@TeleOp(name = "Test: Collection and Arm and Pull", group = "Testing")
+public class collecting extends LinearOpMode {
 
     // Define class members
     DcMotor motor_arm, motor_pull;

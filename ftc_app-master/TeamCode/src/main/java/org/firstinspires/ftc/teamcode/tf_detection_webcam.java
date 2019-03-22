@@ -48,9 +48,9 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import java.util.List;
 
 //TODO: Look around
-//TODO: A copy for the second possibility
-//TODO: Find a way to change parameters conveniently while running
-//TODO: Descending down with the arm
+//TODO: A copy for the second possibility; last step
+//TODO: Find a way to change parameters conveniently while running; IMPORTANT
+//TODO: Descending down with the arm ; easy look at collecting
 
 @Autonomous(name = "Main Autonomous", group = "Autonomous")
 
