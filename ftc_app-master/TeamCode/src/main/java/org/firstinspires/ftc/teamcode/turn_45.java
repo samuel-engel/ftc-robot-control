@@ -126,14 +126,10 @@ public class turn_45 extends LinearOpMode
 
             telemetry.addData(">", angles.firstAngle);
             telemetry.update();
-            turn(90, "left", 0.8);
+            turn(90, "left", 0.3);
+            turn(90, "right", 0.3);
             sleep(10000);
-//            sleep(5000);
-//            go(1.0, "up", 5);
-            /*if(this.gamepad1.dpad_up) {
-
-            }*/
-
+            go(0.5, "up", 2.0);
 
         }
     }
@@ -177,7 +173,7 @@ public class turn_45 extends LinearOpMode
         motor_left.setPower(0);
 
     }
-    private void go(double power, String direction, int distance) {
+    private void go(double power, String direction, double time) {
 
         switch(direction) {
             case "left":
@@ -204,12 +200,12 @@ public class turn_45 extends LinearOpMode
         telemetry.update();
         runtime.reset();
         //figure out a way to capture distance
-        /*while(opModeIsActive() && current_distance < distance){
+        while(opModeIsActive() && (runtime.seconds() < time)){
             telemetry.addData(">", "%2.5f seconds elapsed", runtime.seconds());
             telemetry.addData("> going ", direction);
-            telemetry.addData("> current distance ", current_distance);
+            telemetry.addData("> power ", power);
             telemetry.update();
-        }*/
+        }
         motor_right.setPower(0);
         motor_left.setPower(0);
 
