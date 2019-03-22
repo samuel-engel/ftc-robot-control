@@ -46,7 +46,6 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 import java.util.List;
-import java.util.Locale;
 
 //TODO: Clean up
 
@@ -108,7 +107,6 @@ public class tf_detection_webcam extends LinearOpMode {
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
 
-        composeTelemetry();
         initVuforia();
 
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
@@ -123,6 +121,7 @@ public class tf_detection_webcam extends LinearOpMode {
         push_time = 3.0;
         push_power = 0.5;
         side_time = 2.0;
+        side_power = 0.5;
 
         waitForStart();
 
@@ -133,7 +132,7 @@ public class tf_detection_webcam extends LinearOpMode {
             }
 //          right negative ; left positive
             while (opModeIsActive()) {
-                if (tfod != null) {
+                if (tfod != null && gold_mineral_position == null) {
                     // getUpdatedRecognitions() will return null if no new information is available since
                     // the last time that call was made.
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
@@ -161,47 +160,40 @@ public class tf_detection_webcam extends LinearOpMode {
                             if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
                                 if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
                                     gold_mineral_position = "left";
-                                    go(side_power, "left", side_time);
-                                    push_and_reverse(push_power, push_time);
-                                    go_to_depot();
 
                                 } else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
                                     gold_mineral_position = "right";
-                                    go(side_power, "right", side_time);
-                                    push_and_reverse(push_power, push_time);
-                                    go_to_depot();
 
                                 } else {
                                     gold_mineral_position = "center";
-                                    push_and_reverse(push_power, push_time);
-                                    go_to_depot();
 
                                 }
                             }
                         }
-
                         telemetry.update();
                     }
                     else {
-                        telemetry.addData(">", "nothing detected man");
+                        telemetry.addData(">", "Nothing detected");
                         telemetry.update();
                     }
                 }
-                //future improvement dont shutdown the tensorflow library but use the size of the bound box to determine the proximity to the mineral
-                /*if(is_gold_ahead) {
-                    //go forward
-                    //TODO: time based driving
-                    motor_right.setPower(0.5);
-                    motor_left.setPower(0.5);
-                    runtime.reset();
-                    while (opModeIsActive() && (runtime.seconds() < 1.0)) {
-                        telemetry.addData("Path", "Elapsed", runtime.seconds());
-                        telemetry.update();
-                    }
-                    motor_right.setPower(0);
-                    motor_left.setPower(0);
+                if(gold_mineral_position.equals("left")){
+                    go(side_power, "left", side_time);
+                    push_and_reverse(push_power, push_time);
+                    go_to_depot();
+                }
+                else if(gold_mineral_position.equals("right")){
+                    go(side_power, "right", side_time);
+                    push_and_reverse(push_power, push_time);
+                    go_to_depot();
+                }
+                else{
+                    push_and_reverse(push_power, push_time);
+                    go_to_depot();
+                }
 
-                }*/
+
+
 
             }
         }
@@ -210,6 +202,8 @@ public class tf_detection_webcam extends LinearOpMode {
             tfod.shutdown();
         }
     }
+
+
 
     /**
      * Initialize the Vuforia localization engine.
@@ -240,6 +234,18 @@ public class tf_detection_webcam extends LinearOpMode {
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
     }
 
+    private void go_to_depot(){
+        go(0.5, "left", 2);
+        turn(45,"left", 0.3);
+        go(0.5, "up", 3);
+        go(0.5, "left", 5); // or right depends on the side
+
+    }
+
+    //Movement functions
+
+
+    //OLD
     private void go(double power, String direction, double time) {
 
         switch(direction) {
@@ -272,6 +278,7 @@ public class tf_detection_webcam extends LinearOpMode {
         motor_left.setPower(0);
 
     }
+    //OLD
     private void push_and_reverse(double push_power, double push_time){
         telemetry.addData(">", push_power);
         telemetry.addData(">", push_time);
@@ -296,10 +303,7 @@ public class tf_detection_webcam extends LinearOpMode {
         motor_left.setPower(0);
         telemetry.update();
     }
-    private void go_to_depot(){
-        go(0.5, "left", 2);
-
-    }
+    //OLD
     private void turn(int degree, String direction, double power) {
         angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         int min_range;
@@ -337,25 +341,6 @@ public class tf_detection_webcam extends LinearOpMode {
         motor_right.setPower(0);
         motor_left.setPower(0);
 
-    }
-    void composeTelemetry() {
-
-        // At the beginning of each telemetry update, grab a bunch of data
-        // from the IMU that we will then display in separate lines.
-        telemetry.addAction(new Runnable() {
-            @Override
-            public void run() {
-                // Acquiring the angles is relatively expensive; we don't want
-                // to do that in each of the three items that need that info, as that's
-                // three times the necessary expense.
-
-                angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-
-            }
-        });
-    }
-    String formatDegrees(double degrees){
-        return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
     }
 }
 

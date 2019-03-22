@@ -44,7 +44,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 public class turn_and_go extends LinearOpMode
     {
-    
+
     // The IMU sensor object
     BNO055IMU imu;
 
