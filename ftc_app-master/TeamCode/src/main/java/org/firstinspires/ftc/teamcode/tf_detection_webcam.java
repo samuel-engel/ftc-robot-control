@@ -50,6 +50,7 @@ import java.util.List;
 //TODO: Look around
 //TODO: A copy for the second possibility
 //TODO: Find a way to change parameters conveniently while running
+//TODO: Descending down with the arm
 
 @Autonomous(name = "Main Autonomous", group = "Autonomous")
 

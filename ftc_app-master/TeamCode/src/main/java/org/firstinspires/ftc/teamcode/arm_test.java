@@ -31,22 +31,27 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 
 
-@TeleOp(name = "Test: Extending Arm", group = "Testing")
+@TeleOp(name = "Test: Collection and Arm", group = "Testing")
 public class arm_test extends LinearOpMode {
 
     // Define class members
     DcMotor motor_arm;
+    CRServo servo_left, servo_right;
     double left_trigger, right_trigger, power_arm;
+    Boolean collecting_in = false, collecting_out = false;
 
 
     @Override
     public void runOpMode() {
 
         motor_arm = hardwareMap.get(DcMotor.class, "arm_drive");
+        servo_left = hardwareMap.crservo.get("servo_left");
+        servo_left = hardwareMap.crservo.get("servo_right");
 
         // Wait for the start button
         telemetry.addData(">", "Use right and left trigger to extend and retract the arm" );
@@ -60,16 +65,41 @@ public class arm_test extends LinearOpMode {
             right_trigger = this.gamepad1.right_trigger;
             power_arm = left_trigger + right_trigger;
 
-            telemetry.addData(">", left_trigger);
-            telemetry.addData(">", right_trigger);
+            if(this.gamepad2.dpad_up){
+                collecting_in = true;
+                collecting_out = false;
+            }
+            else if(this.gamepad2.dpad_down){
+                collecting_in = false;
+                collecting_out = true;
+            }
+            else if(this.gamepad2.dpad_left || this.gamepad2.dpad_right){
+                collecting_in = false;
+                collecting_out = false;
+            }
 
-            // Display the current value
+
+
+            if(collecting_in) {
+                servo_left.setPower(1.0);
+                servo_right.setPower(1.0);
+                telemetry.addData(">", "collecting in");
+            }
+            else if(collecting_out){
+                servo_left.setPower(-1.0);
+                servo_right.setPower(-1.0);
+                telemetry.addData(">", "collecting out");
+            }
+            else {
+                servo_left.setPower(0.0);
+                servo_right.setPower(0.0);
+                telemetry.addData(">", "not collecting");
+            }
+            motor_arm.setPower(power_arm);
+
             telemetry.addData("Arm motor Power", "%5.2f", power_arm);
             telemetry.addData(">", "Press Stop to end test." );
             telemetry.update();
-
-            // Set the motor_arm to the new power and pause;
-            motor_arm.setPower(power_arm);
         }
 
         motor_arm.setPower(0);
