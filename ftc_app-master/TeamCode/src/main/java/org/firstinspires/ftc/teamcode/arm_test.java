@@ -40,7 +40,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 public class arm_test extends LinearOpMode {
 
     // Define class members
-    DcMotor motor_arm;
+    DcMotor motor_arm, motor_pull;
     CRServo servo_left, servo_right;
     DigitalChannel digitalTouch;
 
@@ -53,8 +53,10 @@ public class arm_test extends LinearOpMode {
         collecting_in = collecting_out = is_pressed = false;
 
         motor_arm = hardwareMap.get(DcMotor.class, "arm_drive");
+        motor_pull = hardwareMap.get(DcMotor.class, "pull_drive");
         servo_left = hardwareMap.crservo.get("servo_left");
         servo_left = hardwareMap.crservo.get("servo_right");
+
 
         // get a reference to our digitalTouch object.
         digitalTouch = hardwareMap.get(DigitalChannel.class, "sensor_digital");
@@ -103,6 +105,13 @@ public class arm_test extends LinearOpMode {
                 servo_left.setPower(0.0);
                 servo_right.setPower(0.0);
                 telemetry.addData(">", "not collecting");
+            }
+
+            if(this.gamepad2.right_bumper){
+                motor_pull.setPower(1.0);
+            }
+            else if(this.gamepad2.left_bumper){
+                motor_pull.setPower(-1.0);
             }
 
             if(!is_pressed) {
