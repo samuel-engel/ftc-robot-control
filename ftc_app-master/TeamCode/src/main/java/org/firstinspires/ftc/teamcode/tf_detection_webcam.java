@@ -47,10 +47,10 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 import java.util.List;
 
-//TODO: Look around
+//TODO: Test the look around function
 //if nothing happends in 15 seconds then just go straight
 //TODO: A copy for the second possibility; last step
-//TODO: Find a way to change parameters conveniently while running; IMPORTANT
+//TODO: LANDING + SAMPLING -> 10+25 = 35; enough
 //TODO: Descending down with the arm ; easy look at collecting
 
 @Autonomous(name = "Main Autonomous", group = "Autonomous")
@@ -66,11 +66,10 @@ public class tf_detection_webcam extends LinearOpMode {
     BNO055IMU imu;
     Orientation angles;
 
-    double  power_center = 0, push_time, push_power, side_time, side_power;
+    double  push_time, push_power, side_time, side_power;
     DcMotor motor_left, motor_right, motor_center;
-    int left_coordinate, screen_width, width, left_boundary, distance_to_boundary;
+    int screen_width;
     String gold_mineral_position = null;
-    Boolean is_gold_ahead;
     /**
      * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
      * localization engine.
@@ -136,6 +135,8 @@ public class tf_detection_webcam extends LinearOpMode {
             }
 //          right negative ; left positive
             while (opModeIsActive()) {
+                //landing
+                //TODO: extend the arm
                 if (tfod != null && gold_mineral_position == null) {
                     // getUpdatedRecognitions() will return null if no new information is available since
                     // the last time that call was made.
@@ -177,6 +178,7 @@ public class tf_detection_webcam extends LinearOpMode {
                         telemetry.update();
                     }
                     else {
+                        //LOOK AROUND
                         telemetry.addData(">", "Nothing detected");
                         telemetry.update();
                     }
@@ -240,7 +242,7 @@ public class tf_detection_webcam extends LinearOpMode {
 
     private void go_to_depot(){
         go(0.5, "left", 2);
-        turn(45,"left", 0.3);
+        turn(45,"left", 0.5);
         go(0.5, "up", 3);
         go(0.5, "left", 5); // or right depends on the side
 
