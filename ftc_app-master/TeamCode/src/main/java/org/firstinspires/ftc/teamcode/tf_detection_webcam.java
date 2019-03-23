@@ -37,9 +37,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
@@ -67,9 +64,9 @@ public class tf_detection_webcam extends LinearOpMode {
     Orientation angles;
 
     double  push_time, push_power, side_time, side_power;
-    DcMotor motor_left, motor_right, motor_center;
+    DcMotor motor_left, motor_right, motor_center, motor_pull;
     int screen_width;
-    String gold_mineral_position = null;
+    String gold_mineral_position = " ";
     /**
      * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
      * localization engine.
@@ -92,6 +89,8 @@ public class tf_detection_webcam extends LinearOpMode {
         // Establishing the initial direction of the motors
         motor_right.setDirection(DcMotor.Direction.REVERSE);
         motor_left.setDirection(DcMotor.Direction.FORWARD);
+        motor_pull = hardwareMap.get(DcMotor.class, "pull_drive");
+
 
         // Set up the parameters with which we will use our IMU. Note that integration
         // algorithm here just reports accelerations to the logcat log; it doesn't actually
@@ -121,23 +120,34 @@ public class tf_detection_webcam extends LinearOpMode {
         telemetry.addData(">", "Press Play to start tracking");
         telemetry.update();
 
-        push_time = 3.0;
-        push_power = 0.5;
-        side_time = 2.0;
+        push_time = 6.0;
+        push_power = 1;
+        side_time = 4;
         side_power = 0.5;
 
         waitForStart();
 
         if (opModeIsActive()) {
             /** Activate Tensor Flow Object Detection. */
+//          right negative ; left positive
+            while (opModeIsActive()) {
+            runtime.reset();
+            if(opModeIsActive() && (runtime.seconds() < 15)){
+                push_and_reverse(1.0, 5.0);
+            }
+
             if (tfod != null) {
                 tfod.activate();
             }
-//          right negative ; left positive
-            while (opModeIsActive()) {
                 //landing
                 //TODO: extend the arm
-                if (tfod != null && gold_mineral_position == null) {
+                runtime.reset();
+                if(opModeIsActive() && (runtime.seconds() < 2)){
+                    motor_pull.setPower(-1.0);
+
+                }
+
+                if (tfod != null) {
                     // getUpdatedRecognitions() will return null if no new information is available since
                     // the last time that call was made.
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
@@ -148,7 +158,7 @@ public class tf_detection_webcam extends LinearOpMode {
 
 
                         // if three objects detected, find the position of the golden mineral
-                        if (updatedRecognitions.size() == 3 && gold_mineral_position == null) {
+                        if (updatedRecognitions.size() == 3) {
                             int goldMineralX = -1;
                             int silverMineral1X = -1;
                             int silverMineral2X = -1;
@@ -178,7 +188,6 @@ public class tf_detection_webcam extends LinearOpMode {
                         telemetry.update();
                     }
                     else {
-                        //LOOK AROUND
                         telemetry.addData(">", "Nothing detected");
                         telemetry.update();
                     }
@@ -186,16 +195,16 @@ public class tf_detection_webcam extends LinearOpMode {
                 if(gold_mineral_position.equals("left")){
                     go(side_power, "left", side_time);
                     push_and_reverse(push_power, push_time);
-                    go_to_depot();
+
                 }
                 else if(gold_mineral_position.equals("right")){
                     go(side_power, "right", side_time);
                     push_and_reverse(push_power, push_time);
-                    go_to_depot();
+
                 }
-                else{
+                else if(gold_mineral_position.equals("center")){
                     push_and_reverse(push_power, push_time);
-                    go_to_depot();
+
                 }
 
 
@@ -240,13 +249,13 @@ public class tf_detection_webcam extends LinearOpMode {
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
     }
 
-    private void go_to_depot(){
+    /*private void go_to_depot(){
         go(0.5, "left", 2);
         turn(45,"left", 0.5);
         go(0.5, "up", 3);
         go(0.5, "left", 5); // or right depends on the side
 
-    }
+    }*/
     private void look_around(){
         motor_right.setPower(-0.5);
         motor_left.setPower(0.5);
@@ -265,7 +274,6 @@ public class tf_detection_webcam extends LinearOpMode {
     //Movement functions
 
 
-    //OLD
     private void go(double power, String direction, double time) {
 
         switch(direction) {
@@ -288,27 +296,30 @@ public class tf_detection_webcam extends LinearOpMode {
                 motor_right.setPower(0);
                 motor_center.setPower(0);
         }
+
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < time)) {
-            telemetry.addData(">", " %2.5f S Elapsed", runtime.seconds());
-            telemetry.addData(">", direction);
+        while(opModeIsActive() && (runtime.seconds() < time)){
+            telemetry.addData("Going: ", direction);
+            telemetry.addData("Power: ", power);
+            telemetry.addData(">", "%2.5f seconds elapsed", runtime.seconds());
             telemetry.update();
         }
         motor_right.setPower(0);
         motor_left.setPower(0);
+        motor_center.setPower(0);
 
     }
-    //OLD
-    private void push_and_reverse(double push_power, double push_time){
-        telemetry.addData(">", push_power);
-        telemetry.addData(">", push_time);
 
+    private void push_and_reverse(double push_power, double push_time){
         //go forwards
         motor_left.setPower(push_power);
         motor_right.setPower(push_power);
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < push_time)) {
-
+            telemetry.addData("Push power: ", push_power);
+            telemetry.addData("Push time: ", push_time);
+            telemetry.addData("Forward: ", " %2.5f S Elapsed", runtime.seconds());
+            telemetry.update();
         }
 
         //go backwards
@@ -316,51 +327,15 @@ public class tf_detection_webcam extends LinearOpMode {
         motor_right.setPower(-push_power);
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < (push_time))) {
-
+            telemetry.addData("Push power: ", push_power);
+            telemetry.addData("Push time: ", push_time);
+            telemetry.addData("Backward: ", " %2.5f S Elapsed", runtime.seconds());
+            telemetry.update();
         }
+
         //stop
         motor_right.setPower(0);
         motor_left.setPower(0);
-        telemetry.update();
-    }
-    //OLD
-    private void turn(int degree, String direction, double power) {
-        angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        int min_range;
-        int max_range;
-        if(direction == "left"){
-            min_range = 0;
-            max_range = degree;
-            motor_left.setPower(-power);
-            motor_right.setPower(power);
-        }
-        else if(direction == "right"){
-            min_range = -degree;
-            max_range = 0;
-            motor_left.setPower(power);
-            motor_right.setPower(-power);
-        }
-        else {
-            min_range = 0;
-            max_range = 0;
-            motor_left.setPower(0.0);
-            motor_right.setPower(0.0);
-            telemetry.addData(">", "Incorrect input: use either left or right");
-            telemetry.update();
-        }
-        telemetry.addData("> min - ", min_range);
-        telemetry.addData("> max - ", max_range);
-        telemetry.update();
-        runtime.reset();
-        while(opModeIsActive() && min_range <= angles.firstAngle && angles.firstAngle <= max_range){
-            telemetry.addData(">", "%2.5f seconds elapsed", runtime.seconds());
-            telemetry.addData("> turning ", direction);
-            telemetry.addData("> current angle - ", angles.firstAngle);
-            telemetry.update();
-        }
-        motor_right.setPower(0);
-        motor_left.setPower(0);
-
     }
 }
 

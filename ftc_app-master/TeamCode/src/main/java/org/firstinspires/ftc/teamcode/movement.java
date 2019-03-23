@@ -35,9 +35,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 @TeleOp(name = "Test: Turning; Going; Pushing", group = "Testing")
@@ -59,6 +56,7 @@ public class movement extends LinearOpMode
 
         motor_left = hardwareMap.get(DcMotor.class, "left_drive");
         motor_right = hardwareMap.get(DcMotor.class, "right_drive");
+        motor_center = hardwareMap.get(DcMotor.class, "center_drive");
 
         // Establish the initial direction of the motors
         motor_right.setDirection(DcMotor.Direction.REVERSE);
@@ -83,18 +81,20 @@ public class movement extends LinearOpMode
 
 
         while (opModeIsActive()) {
-            telemetry.addData(">", angles.firstAngle);
-            telemetry.update();
-            turn(90, "left", 0.3);
+            /*turn(90, "left", 0.3);
             sleep(1000);
             turn(90, "right", 0.3);
             sleep(1000);
-            turn(45, "left", 0.3);
+            turn(45, "left", 0.3);*/
+            go(0.5, "left", 1);
+            sleep(1000);
+            push_and_reverse(0.5, 2);
+            sleep(1000);
 
         }
     }
 
-    private void turn(int degree, String direction, double power) {
+    /*private void turn(int degree, String direction, double power) {
         angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         int min_range = 0, max_range = 0;
 
@@ -124,7 +124,7 @@ public class movement extends LinearOpMode
         motor_right.setPower(0);
         motor_left.setPower(0);
 
-    }
+    }*/
 
     private void go(double power, String direction, double time) {
 
@@ -158,6 +158,8 @@ public class movement extends LinearOpMode
         }
         motor_right.setPower(0);
         motor_left.setPower(0);
+        motor_center.setPower(0);
+
     }
 
     private void push_and_reverse(double push_power, double push_time){

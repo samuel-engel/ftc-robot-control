@@ -36,7 +36,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 
 
-@TeleOp(name = "Test: Collection and Arm and Pull", group = "Testing")
+@TeleOp(name = "Test: Collection and Arm and Pull   ", group = "Testing")
 public class collecting extends LinearOpMode {
 
     // Define class members
@@ -45,21 +45,19 @@ public class collecting extends LinearOpMode {
     DigitalChannel digitalTouch;
 
     double left_trigger, right_trigger, power_arm;
-    Boolean collecting_in, collecting_out, is_pressed;
-
+    Boolean collecting_in, collecting_out, is_pressed = false;
 
     @Override
     public void runOpMode() {
-        collecting_in = collecting_out = is_pressed = false;
 
         motor_arm = hardwareMap.get(DcMotor.class, "arm_drive");
         motor_pull = hardwareMap.get(DcMotor.class, "pull_drive");
-        servo_left = hardwareMap.crservo.get("servo_left");
-        servo_left = hardwareMap.crservo.get("servo_right");
+        servo_left = hardwareMap.get(CRServo.class, "servo_left");
+        servo_right = hardwareMap.get(CRServo.class, "servo_right");
 
 
         // get a reference to our digitalTouch object.
-        digitalTouch = hardwareMap.get(DigitalChannel.class, "sensor_digital");
+        digitalTouch = hardwareMap.get(DigitalChannel.class, "digitalTouch");
 
         // set the digital channel to input.
         digitalTouch.setMode(DigitalChannel.Mode.INPUT);
@@ -72,51 +70,40 @@ public class collecting extends LinearOpMode {
         while(opModeIsActive()) {
 
             // combine the float value of both triggers
-            left_trigger = 0.0 - this.gamepad1.left_trigger;
-            right_trigger = this.gamepad1.right_trigger;
+            left_trigger = 0.0 - this.gamepad2.left_trigger;
+            right_trigger = this.gamepad2.right_trigger;
             power_arm = left_trigger + right_trigger;
 
             is_pressed = !(digitalTouch.getState());
 
             if(this.gamepad2.dpad_up){
-                collecting_in = true;
-                collecting_out = false;
-            }
-            else if(this.gamepad2.dpad_down){
-                collecting_in = false;
-                collecting_out = true;
-            }
-            else if(this.gamepad2.dpad_left || this.gamepad2.dpad_right){
-                collecting_in = false;
-                collecting_out = false;
-            }
-
-            if(collecting_in) {
                 servo_left.setPower(1.0);
                 servo_right.setPower(1.0);
                 telemetry.addData(">", "collecting in");
             }
-            else if(collecting_out){
+            else if(this.gamepad2.dpad_down){
                 servo_left.setPower(-1.0);
                 servo_right.setPower(-1.0);
                 telemetry.addData(">", "collecting out");
             }
-            else {
+            else if(this.gamepad2.dpad_left || this.gamepad2.dpad_right){
                 servo_left.setPower(0.0);
                 servo_right.setPower(0.0);
                 telemetry.addData(">", "not collecting");
             }
 
-            if(this.gamepad2.right_bumper){
+
+            if(this.gamepad2.right_bumper && !is_pressed){
                 motor_pull.setPower(1.0);
             }
             else if(this.gamepad2.left_bumper){
                 motor_pull.setPower(-1.0);
             }
-
-            if(!is_pressed) {
-                motor_arm.setPower(power_arm);
+            else{
+                motor_pull.setPower(0.0);
             }
+            motor_arm.setPower(power_arm);
+
             telemetry.addData("Arm motor Power", "%5.2f", power_arm);
             telemetry.addData(">", "Press Stop to end test." );
             telemetry.update();
