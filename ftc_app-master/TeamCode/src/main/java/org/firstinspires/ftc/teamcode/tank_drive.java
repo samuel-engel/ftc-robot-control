@@ -14,7 +14,6 @@ public class tank_drive extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        // Define class members
         power_left = power_right = power_center = 0;
         motor_left = hardwareMap.get(DcMotor.class, "left_drive");
         motor_right = hardwareMap.get(DcMotor.class, "right_drive");
@@ -33,7 +32,7 @@ public class tank_drive extends LinearOpMode {
             power_right = 0.0 - this.gamepad1.right_stick_y;
             power_left = 0.0 - this.gamepad1.left_stick_y;
 
-            // Combine the output of both triggers to get single value for motor power
+            // Combine the output of both triggers to get single value for center motor
             left_trigger = 0.0 - this.gamepad1.left_trigger;
             right_trigger = this.gamepad1.right_trigger;
             power_center = left_trigger + right_trigger;

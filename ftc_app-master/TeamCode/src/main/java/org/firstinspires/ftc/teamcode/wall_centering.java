@@ -52,9 +52,10 @@ public class wall_centering extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 
+    //PROOF OF CONCEPT to be adapted into the autonomous phase if necessary.
     @Override
     public void runOpMode() {
-        // you can use this as a regular DistanceSensor.
+
         sensorRange = hardwareMap.get(DistanceSensor.class, "sensor_range");
         motor_left = hardwareMap.get(DcMotor .class, "left_drive");
         motor_right = hardwareMap.get(DcMotor.class, "right_drive");

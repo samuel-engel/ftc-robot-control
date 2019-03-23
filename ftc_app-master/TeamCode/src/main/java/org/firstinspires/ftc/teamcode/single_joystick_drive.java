@@ -26,14 +26,13 @@ public class single_joystick_drive extends LinearOpMode {
         servo_left = hardwareMap.get(CRServo.class, "servo_left");
         servo_right = hardwareMap.get(CRServo.class, "servo_right");
 
-
+        // Set initial direction
         motor_right.setDirection(DcMotor.Direction.REVERSE);
         motor_left.setDirection(DcMotor.Direction.REVERSE);
         motor_center.setDirection(DcMotor.Direction.FORWARD);
 
 
-        // Wait for the start button
-        telemetry.addData(">", "Press Start control robot via single joystick" );
+        telemetry.addData(">", "Press Start control robot via main drive" );
         telemetry.update();
         waitForStart();
 
@@ -42,19 +41,23 @@ public class single_joystick_drive extends LinearOpMode {
             right_x = 0.0 - this.gamepad1.right_stick_x;
             right_y = 0.0 - this.gamepad1.right_stick_y;
 
-            // combine the float value of both triggers SECOND
+            // combine the float value of both triggers for lifting the arm
             left_trigger = 0.0 - this.gamepad2.left_trigger;
             right_trigger = this.gamepad2.right_trigger;
             power_arm = left_trigger + right_trigger;
-            telemetry.addData(">", left_trigger);
+            motor_arm.setPower(power_arm);
+
+            // Show detailed values dor debugging
+            /*telemetry.addData(">", left_trigger);
             telemetry.addData(">", right_trigger);
-            telemetry.addData(">", power_arm);
+            telemetry.addData(">", power_arm);*/
 
             // Combine the output of both triggers to get the center motor power
             left_trigger = 0.0 - this.gamepad1.left_trigger;
             right_trigger = this.gamepad1.right_trigger;
             power_center = left_trigger + right_trigger;
 
+            // Extend the arm
             if(this.gamepad2.right_bumper){
                 motor_pull.setPower(1.0);
             }
@@ -65,8 +68,7 @@ public class single_joystick_drive extends LinearOpMode {
                 motor_pull.setPower(0.0);
             }
 
-            motor_arm.setPower(power_arm);
-
+            // Start servos to collect minerals
             if(this.gamepad2.dpad_up){
                 servo_left.setPower(1.0);
                 servo_right.setPower(1.0);
@@ -93,15 +95,6 @@ public class single_joystick_drive extends LinearOpMode {
             telemetry.addData("Power left: ", power_left);
             telemetry.addData("Power center: ", power_center);
             telemetry.update();
-
-            /*if (this.gamepad2.right_bumper) {
-                motor_pull.setPower(1.0);
-            } else if (this.gamepad2.left_bumper) {
-                motor_pull.setPower(-1.0);
-            } else {
-                motor_pull.setPower(0.0);
-            }*/
-
 
             motor_right.setPower(power_right);
             motor_left.setPower(power_left);

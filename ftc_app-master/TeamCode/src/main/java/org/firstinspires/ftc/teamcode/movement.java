@@ -35,6 +35,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 @TeleOp(name = "Test: Turning; Going; Pushing", group = "Testing")
@@ -46,8 +49,6 @@ public class movement extends LinearOpMode
     BNO055IMU imu;
 
     Orientation angles;
-
-
     DcMotor motor_left, motor_right, motor_center;
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -81,11 +82,6 @@ public class movement extends LinearOpMode
 
 
         while (opModeIsActive()) {
-            /*turn(90, "left", 0.3);
-            sleep(1000);
-            turn(90, "right", 0.3);
-            sleep(1000);
-            turn(45, "left", 0.3);*/
             go(0.5, "left", 1);
             sleep(1000);
             push_and_reverse(0.5, 2);
@@ -94,7 +90,8 @@ public class movement extends LinearOpMode
         }
     }
 
-    /*private void turn(int degree, String direction, double power) {
+    private void turn(int degree, String direction, double power) {
+        // Angles from 0 to -180 for turing left and 0 to 180 for turning right
         angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         int min_range = 0, max_range = 0;
 
@@ -124,7 +121,7 @@ public class movement extends LinearOpMode
         motor_right.setPower(0);
         motor_left.setPower(0);
 
-    }*/
+    }
 
     private void go(double power, String direction, double time) {
 
@@ -163,7 +160,7 @@ public class movement extends LinearOpMode
     }
 
     private void push_and_reverse(double push_power, double push_time){
-        //go forwards
+        // Go forwards
         motor_left.setPower(push_power);
         motor_right.setPower(push_power);
         runtime.reset();
@@ -174,7 +171,7 @@ public class movement extends LinearOpMode
             telemetry.update();
         }
 
-        //go backwards
+        // Go backwards
         motor_left.setPower(-push_power);
         motor_right.setPower(-push_power);
         runtime.reset();
@@ -185,7 +182,7 @@ public class movement extends LinearOpMode
             telemetry.update();
         }
 
-        //stop
+        // Stop
         motor_right.setPower(0);
         motor_left.setPower(0);
     }
