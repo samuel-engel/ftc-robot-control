@@ -72,7 +72,7 @@ public class tf_centering_advanced extends LinearOpMode {
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                     if (updatedRecognitions != null) {
                         telemetry.addData("# Object Detected", updatedRecognitions.size());
-                        if (updatedRecognitions.size() == 1) {
+                        if (updatedRecognitions.size() < 5) {
                             for (Recognition recognition : updatedRecognitions) {
                                 if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
                                     left_coordinate = (int) recognition.getLeft();
@@ -93,25 +93,25 @@ public class tf_centering_advanced extends LinearOpMode {
 
 
                                     // if on right half of screen (- 1 width of buffer)
-                                    if (left_coordinate < left_boundary) {
+                                    if (left_coordinate < (left_boundary-width)) {
                                         //the decimal percentage of distance-to-boundary of the edge-to-boundary size in pixels
                                         //left_boundary already expressed as the pixels from left edge
-                                        power_center = distance_to_boundary / left_boundary;
+                                        power_center = (double) distance_to_boundary / left_boundary;
                                         telemetry.addData("#", "Drive left");
                                         telemetry.addData("#", power_center);
                                     }
                                     //if on left half of screen (+ 1 width of buffer)
-                                    else if (left_coordinate > left_boundary) {
+                                    else if (left_coordinate > (left_boundary+width)) {
                                         //the decimal percentage of distance-to-boundary of the edge-to-boundary size in pixels
                                         //left_boundary + width is equivalent to (screen_width + width) / 2;
-                                        power_center = distance_to_boundary / (left_boundary + width);
+                                        power_center = (double) distance_to_boundary / (left_boundary + width);
                                         telemetry.addData("#", "Drive right");
 
                                     } else {
                                         motor_center.setPower(0);
-                                        telemetry.addData(">", "The mineral is centered");
-//                                        motor_left.setPower(0.3);
-//                                        motor_right.setPower(0.3);
+                                        telemetry.addData(">", "center");
+                                        motor_left.setPower(0.3);
+                                        motor_right.setPower(0.3);
                                         telemetry.update();
                                     }
                                     motor_center.setPower(power_center);
