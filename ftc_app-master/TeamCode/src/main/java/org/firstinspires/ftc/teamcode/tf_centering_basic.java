@@ -42,7 +42,7 @@ public class tf_centering_basic extends LinearOpMode {
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
         motor_center = hardwareMap.get(DcMotor.class, "center_drive");
-
+        int left_coordinate, screen_width;
         initVuforia();
 
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
@@ -69,9 +69,7 @@ public class tf_centering_basic extends LinearOpMode {
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                     if (updatedRecognitions != null) {
                       telemetry.addData("# Object Detected", updatedRecognitions.size());
-                      if (updatedRecognitions.size() == 1) {
-                         int left_coordinate = 0;
-                         int screen_width = 0;
+                      if (updatedRecognitions.size() < 5) {
                         for (Recognition recognition : updatedRecognitions) {
                             left_coordinate = (int) recognition.getLeft();
                             screen_width = recognition.getImageWidth();
