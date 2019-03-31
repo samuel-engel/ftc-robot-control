@@ -10,6 +10,10 @@
 ### tf_detection_webcam.java || Main Autonomous
 The main autonomous mode uses the Vuforia engine in combination with a TensorFlow model to recognize in-game minerals in order to detect the position of the gold mineral. The robot uses a combination of preprogrammed movements defined in the ```movement.java``` file to move around the field and score points. It pushes the gold mineral from its default position in the sampling area and navigates into the home depot in the corner of the playing field.
 
+<br/><br/>
+<br/><br/>
+
+
 ---
 
 ## Teleoperational modes (TeleOps)
